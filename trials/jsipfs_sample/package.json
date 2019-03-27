@@ -1,0 +1,22 @@
+{
+  "name": "jsipfs_sample",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "iamjosephvarghese",
+  "license": "ISC",
+  "dependencies": {
+    "@google-cloud/storage": "^2.4.2",
+    "@google-cloud/vision": "^0.24.0",
+    "axios": "^0.18.0",
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "ipfs": "^0.34.4",
+    "node-webcam": "^0.4.6",
+    "rgb-to-hsl": "0.0.3",
+    "url": "^0.11.0"
+  }
+}
