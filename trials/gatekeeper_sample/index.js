@@ -11,17 +11,14 @@ app.use(bodyParser.json());
 
 app.get('/test', async function(req, res) {
 console.log('inside get method');
-console.log(req.query.temperature);
-console.log(req.query.location);
 
 
 Request.post({
     "headers": { "content-type": "application/json" },
-    "url": "http://localhost:3000/api/TemperatureDrop",
+    "url": "https://65c94784.ngrok.io/api/ShareDoctor",
     "body": JSON.stringify({
-        "asset": "org.example.mynetwork.MedicinePackage#0009",
-        "newTemperature": String(req.query.temperature),
-        "newLocation": String(req.query.location)
+        "asset": "org.example.basic.MedicalRecord#2001",
+        "newDoctorId": "3005"
     })
 }, (error, response, body) => {
     if(error) {
