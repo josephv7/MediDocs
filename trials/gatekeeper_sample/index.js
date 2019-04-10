@@ -4,6 +4,7 @@ const url = require('url');
 const querystring = require('querystring');
 const Request = require("request");
 const axios = require('axios');
+const openssl = require('openssl-nodejs')
 
 let app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -18,11 +19,13 @@ app.get('/createPatient', async function(req, res) {
 
     var jsonResponse;
     var count;
+    var aesKey;
+    
 
-    axios.get('http://315419af.ngrok.io/api/Patient').then(function (response){
+    axios.get('http://localhost:3000/api/Patient').then(function (response){
         console.log(response.data);
         jsonResponse = response.data;
-        
+
     }).then(function (response){
         findPatientCount();
     }).catch(function (error) {
@@ -33,41 +36,43 @@ app.get('/createPatient', async function(req, res) {
   function findPatientCount(){
 
 
-    count =  2005 + jsonResponse.length;
+    count =  2001 + jsonResponse.length;
 
+    console.log(aesKey + '------fffff');
 
+    openssl('openssl enc -aes-128-cbc -k secret -P -md sha1', function (err, buffer) {
+        console.log(err.toString(), buffer.toString());
+        aesKey = buffer.toString().substr(26,32);
+        console.log(aesKey);
 
+        Request.post({
+            "headers": { "content-type": "application/json" },
+            "url": "http://localhost:3000/api/Patient",
+            "body": JSON.stringify({
+                "firstName" : req.query.firstName,
+                "lastName" : req.query.lastName,
+                "patientId" : count.toString(),
+                "contentKey" : aesKey,
+                "password" : "adad"
+                
+            })
+        }, (error, response, body) => {
+            if(error) {
+                return console.dir(error);
+            }
+            console.dir(JSON.parse(body));
+        });
 
-    Request.post({
-        "headers": { "content-type": "application/json" },
-        "url": "http://315419af.ngrok.io/api/Patient",
-        "body": JSON.stringify({
-            "firstName" : req.query.firstName,
-            "lastName" : req.query.lastName,
-            "patientId" : count.toString(),
-            "password" : "adad",
-            "contentKey" : "fsffs"
-        })
-    }, (error, response, body) => {
-        if(error) {
-            return console.dir(error);
-        }
-        console.dir(JSON.parse(body));
-    });
-
+        });
 
   }
+  
 
 
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    
-    
-    
-    
-    
-    });
+});
 
 
 
