@@ -88,6 +88,7 @@ app.get('/createDoctor', async function(req, res) {
 
     var jsonResponse;
     var count;
+    var data;
     
 
     axios.get('http://localhost:3000/api/Doctor').then(function (response){
@@ -129,17 +130,53 @@ app.get('/createDoctor', async function(req, res) {
 
 
 
-        Request.post({
+        // Request.post({
+        //     "headers": { "content-type": "application/json" },
+        //     "url": "http://localhost:3000/api/Doctor",
+        //     "body": JSON.stringify({
+        //         "firstName" : req.query.firstName,
+        //         "lastName" : req.query.lastName,
+        //         "doctorId" : count.toString(),
+        //         "password" : "adad",
+        //         "publicKey" : "",
+        //         "privateKey" : ""
+                
+        //     })
+        // }, (error, response, body) => {
+        //     if(error) {
+        //         return console.dir(error);
+        //     }
+        //     console.dir(JSON.parse(body));
+        // });
+
+
+  }
+
+
+  function getKeyData(){
+
+
+    
+
+
+    fs.readFile(privateKeyFile, 'utf8', function(err, contents) {
+        console.log(contents);
+        privateKey = contents;
+        fs.readFile(publicKeyFile, 'utf8', function(err, contents) {
+            console.log(contents);
+            publicKey = contents;
+
+
+            Request.post({
             "headers": { "content-type": "application/json" },
             "url": "http://localhost:3000/api/Doctor",
             "body": JSON.stringify({
                 "firstName" : req.query.firstName,
                 "lastName" : req.query.lastName,
                 "doctorId" : count.toString(),
-                "contentKey" : aesKey,
                 "password" : "adad",
-                "publicKey" : "",
-                "privateKey" : ""
+                "publicKey" : publicKey,
+                "privateKey" : privateKey
                 
             })
         }, (error, response, body) => {
@@ -149,15 +186,6 @@ app.get('/createDoctor', async function(req, res) {
             console.dir(JSON.parse(body));
         });
 
-
-  }
-
-
-  function getKeyData(){
-    fs.readFile(privateKeyFile, 'utf8', function(err, contents) {
-        console.log(contents);
-        fs.readFile(publicKeyFile, 'utf8', function(err, contents) {
-            console.log(contents);
         });
     });
 
