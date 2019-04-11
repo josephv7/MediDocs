@@ -9,7 +9,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.18.0",
     "express": "^4.16.4",
+    "node-cmd": "^3.0.0",
+    "openssl-nodejs": "^1.0.5",
     "request": "^2.88.0"
   }
 }
