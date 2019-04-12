@@ -210,11 +210,15 @@ app.get('/passwordCreation', async function(req, res) {
 
 
     console.log(SHA256(req.query.password).toString());
-    
+    // var hashedPassword = '{response:' + SHA256(req.query.password).toString() + '}';
     
     res.header("Access-Control-Allow-Origin", "*");
         res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
         res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+
+    
+
+    res.send(JSON.stringify({response:SHA256(req.query.password).toString()}));
     
     });
 
