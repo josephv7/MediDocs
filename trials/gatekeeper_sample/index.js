@@ -7,6 +7,7 @@ const axios = require('axios');
 const openssl = require('openssl-nodejs')
 const fs = require('fs');
 const cmd=require('node-cmd');
+var SHA256 = require("crypto-js/sha256");
 
 let app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -203,6 +204,24 @@ app.get('/createDoctor', async function(req, res) {
 
 
 
+app.get('/passwordCreation', async function(req, res) {
+    console.log('inside get method');
+    console.log(req.query.password);
+
+
+    console.log(SHA256(req.query.password).toString());
+    
+    
+    res.header("Access-Control-Allow-Origin", "*");
+        res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
+        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    
+    });
+
+
+
+
+
 
 
 
@@ -224,6 +243,9 @@ Request.post({
     console.dir(JSON.parse(body));
 });
 
+res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 
 });
 
