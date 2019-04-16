@@ -7,6 +7,7 @@ const axios = require('axios');
 const openssl = require('openssl-nodejs')
 const fs = require('fs');
 const cmd=require('node-cmd');
+const SHA256 = require("crypto-js/sha256");
 
 let app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -203,29 +204,122 @@ app.get('/createDoctor', async function(req, res) {
 
 
 
+app.get('/passwordCreation', async function(req, res) {
+    console.log('inside get method');
+    console.log(req.query.password);
+
+
+    console.log(SHA256(req.query.password).toString());
+    var hashedPassword = '{response:' + SHA256(req.query.password).toString() + '}';
+    
+    res.header("Access-Control-Allow-Origin", "*");
+        res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
+        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+
+    
+
+    res.send(JSON.stringify({response:SHA256(req.query.password).toString()}));
+    
+    });
+
+
+
+
+
+
+
+
+
+
+
+
+
+app.post('/api/patientLogin', function(req, res) {
+    var username = req.body.username;
+    var password = req.body.password;
+    
+
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+
+
+    var url = 'http://localhost:3000/api/Patient/' + username.toString();
+
+    axios.get(url).then(function (response){
+        console.log(response.data);
+        jsonResponse = response.data;
+        
+
+    }).then(function (response){
+        var response2 = jsonResponse;
+        checkPassword(response2)
+    }).catch(function (error) {
+    console.log(error);
+  });
+
+
+  function checkPassword(response){
+      console.log(response);
+      console.log(response.password);
+      console.log('inside check');
+
+      if(password == response.password){
+          res.send('success');
+      }else{
+          res.send('error');
+      }
+      
+
+  }
+
+    console.log(password);
+    console.log(username);
+
+
+});
+
+
 
 
 
 app.get('/test', async function(req, res) {
-console.log('inside get method');
+    console.log('inside get method');
+    
+    
+    Request.post({
+        "headers": { "content-type": "application/json" },
+        "url": "https://65c94784.ngrok.io/api/ShareDoctor",
+        "body": JSON.stringify({
+            "asset": "org.example.basic.MedicalRecord#2001",
+            "newDoctorId": "3005"
+        })
+    }, (error, response, body) => {
+        if(error) {
+            return console.dir(error);
+        }
+        console.dir(JSON.parse(body));
+    });
+    
+    res.header("Access-Control-Allow-Origin", "*");
+        res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
+        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    
+    });
 
 
-Request.post({
-    "headers": { "content-type": "application/json" },
-    "url": "https://65c94784.ngrok.io/api/ShareDoctor",
-    "body": JSON.stringify({
-        "asset": "org.example.basic.MedicalRecord#2001",
-        "newDoctorId": "3005"
-    })
-}, (error, response, body) => {
-    if(error) {
-        return console.dir(error);
-    }
-    console.dir(JSON.parse(body));
+
+app.post('/api/users', function(req, res) {
+    var user_id = req.body.id;
+    
+
+    console.log(user_id);
+    res.send(user_id);
 });
 
 
-});
+
+
 
   let server = app.listen(5001, function() {
       console.log('Server is listening on port 5001')
