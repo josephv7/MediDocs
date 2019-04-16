@@ -234,7 +234,7 @@ app.get('/passwordCreation', async function(req, res) {
 
 
 
-app.post('/api/userLogin', function(req, res) {
+app.post('/api/patientLogin', function(req, res) {
     var username = req.body.username;
     var password = req.body.password;
     
@@ -244,7 +244,7 @@ app.post('/api/userLogin', function(req, res) {
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 
 
-    var url = 'http://localhost:3000/api/Doctor/' + username.toString();
+    var url = 'http://localhost:3000/api/Patient/' + username.toString();
 
     axios.get(url).then(function (response){
         console.log(response.data);
@@ -273,15 +273,9 @@ app.post('/api/userLogin', function(req, res) {
 
   }
 
-
-  
-
     console.log(password);
     console.log(username);
-    // res.send(username);
 
-
-    
 
 });
 
