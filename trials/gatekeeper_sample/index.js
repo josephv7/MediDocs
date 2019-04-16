@@ -226,6 +226,60 @@ app.get('/passwordCreation', async function(req, res) {
 
 
 
+    app.get('/api/listDoctors', async function(req, res) {
+        console.log('inside get method');
+
+
+
+        res.header("Access-Control-Allow-Origin", "*");
+            res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
+            res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+        
+
+
+        axios.get('http://localhost:3000/api/Doctor').then(function (response){
+            console.log(response.data);
+            jsonResponse = response.data;
+    
+        }).then(function (response){
+            filterDoctorData();
+        }).catch(function (error) {
+        console.log(error);
+      });
+
+
+      function filterDoctorData(){
+        for(var i = 0; i < jsonResponse.length; i++) {
+            delete jsonResponse[i]['password'];
+            delete jsonResponse[i]['privateKey'];
+        }
+
+        console.log(jsonResponse);
+        res.send(jsonResponse);
+      }
+        
+        
+        // Request.post({
+        //     "headers": { "content-type": "application/json" },
+        //     "url": "https://65c94784.ngrok.io/api/ShareDoctor",
+        //     "body": JSON.stringify({
+        //         "asset": "org.example.basic.MedicalRecord#2001",
+        //         "newDoctorId": "3005"
+        //     })
+        // }, (error, response, body) => {
+        //     if(error) {
+        //         return console.dir(error);
+        //     }
+        //     console.dir(JSON.parse(body));
+        // });
+        
+        
+        });
+    
+
+
+
+
 
 
 
@@ -283,6 +337,8 @@ app.post('/api/patientLogin', function(req, res) {
 
 
 
+
+
 app.get('/test', async function(req, res) {
     console.log('inside get method');
     
@@ -309,7 +365,7 @@ app.get('/test', async function(req, res) {
 
 
 
-app.post('/api/users', function(req, res) {
+app.post('/api/test', function(req, res) {
     var user_id = req.body.id;
     
 
