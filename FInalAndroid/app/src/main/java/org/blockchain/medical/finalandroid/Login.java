@@ -1,10 +1,14 @@
 package org.blockchain.medical.finalandroid;
 
+import android.app.ProgressDialog;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import java.util.List;
@@ -21,6 +25,7 @@ public class Login extends AppCompatActivity {
     EditText password;
     Button login;
     String loginStatus;
+    ProgressBar pd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +35,7 @@ public class Login extends AppCompatActivity {
         name = findViewById(R.id.name);
         password = findViewById(R.id.password);
         login = findViewById(R.id.login);
+        pd = findViewById(R.id.progressBar);
 
         login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -38,7 +44,10 @@ public class Login extends AppCompatActivity {
                     Toast.makeText(Login.this, "Enter Required Fields", Toast.LENGTH_SHORT).show();
                 }else{
 
+                    login.setVisibility(View.INVISIBLE);
+                    pd.setVisibility(View.VISIBLE);
                     postLogin();
+
 
                 }
             }
@@ -66,10 +75,25 @@ public class Login extends AppCompatActivity {
                 loginStatus = docs.get(0).status;
                 if (loginStatus.equalsIgnoreCase("ok")){
                     Toast.makeText(Login.this, "Success", Toast.LENGTH_SHORT).show();
+
+                    SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
+                    SharedPreferences.Editor editor = pref.edit();
+                    editor.putBoolean("loggedin", true);
+                    editor.putString("name",name.getText().toString());
+                    editor.commit();
+
+                    Intent homeIntent = new Intent(Login.this,Home.class);
+                    startActivity(homeIntent);
+                    finish();
+
                 }else if(loginStatus.equalsIgnoreCase("incorrect")){
                     Toast.makeText(Login.this, "Incorrect Password", Toast.LENGTH_SHORT).show();
                 }else if(loginStatus.equalsIgnoreCase("error")){
                     Toast.makeText(Login.this, "Server Error", Toast.LENGTH_SHORT).show();
+
+                    pd.setVisibility(View.INVISIBLE);
+                    login.setVisibility(View.VISIBLE);
+
                 }
 
 
