@@ -70,14 +70,10 @@ app.get('/createPatient', async function(req, res) {
 
   }
   
-
-
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 });
-
-
 
 
 
@@ -109,7 +105,6 @@ app.get('/createDoctor', async function(req, res) {
     count =  3002 + jsonResponse.length;
 
 
- 
     // openssl genrsa -out rsa_1024_priv.pem 1024
     // openssl rsa -pubout -in rsa_1024_priv.pem -out rsa_1024_pub.pem
 
@@ -126,31 +121,6 @@ app.get('/createDoctor', async function(req, res) {
     getKeyData();
     
     
-    
-
-
-
-
-        // Request.post({
-        //     "headers": { "content-type": "application/json" },
-        //     "url": "http://localhost:3000/api/Doctor",
-        //     "body": JSON.stringify({
-        //         "firstName" : req.query.firstName,
-        //         "lastName" : req.query.lastName,
-        //         "doctorId" : count.toString(),
-        //         "password" : "adad",
-        //         "publicKey" : "",
-        //         "privateKey" : ""
-                
-        //     })
-        // }, (error, response, body) => {
-        //     if(error) {
-        //         return console.dir(error);
-        //     }
-        //     console.dir(JSON.parse(body));
-        // });
-
-
   }
 
 
@@ -203,7 +173,7 @@ app.get('/createDoctor', async function(req, res) {
 
 
 
-
+// API for password creation from web portal
 app.get('/passwordCreation', async function(req, res) {
     console.log('inside get method');
     console.log(req.query.password);
@@ -225,7 +195,7 @@ app.get('/passwordCreation', async function(req, res) {
 
 
 
-
+// API to list doctors after removing private data
     app.get('/api/listDoctors', async function(req, res) {
         console.log('inside get method');
 
@@ -257,40 +227,18 @@ app.get('/passwordCreation', async function(req, res) {
         console.log(jsonResponse);
         res.send(jsonResponse);
       }
-        
-        
-        // Request.post({
-        //     "headers": { "content-type": "application/json" },
-        //     "url": "https://65c94784.ngrok.io/api/ShareDoctor",
-        //     "body": JSON.stringify({
-        //         "asset": "org.example.basic.MedicalRecord#2001",
-        //         "newDoctorId": "3005"
-        //     })
-        // }, (error, response, body) => {
-        //     if(error) {
-        //         return console.dir(error);
-        //     }
-        //     console.dir(JSON.parse(body));
-        // });
-        
+    
         
         });
     
 
 
 
-
-
-
-
-
-
-
-
-
+// API for patient login
 app.post('/api/patientLogin', function(req, res) {
     var username = req.body.username;
     var password = req.body.password;
+    var type = req.body.type;
     
 
     res.header("Access-Control-Allow-Origin", "*");
@@ -298,7 +246,18 @@ app.post('/api/patientLogin', function(req, res) {
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 
 
-    var url = 'http://localhost:3000/api/Patient/' + username.toString();
+    var url;
+    if(type == 'patient'){
+        url = 'http://localhost:3000/api/Patient/' + username.toString();
+    }else if(type == 'doctor'){
+        url = 'http://localhost:3000/api/Doctor/' + username.toString();
+    }else if(type == 'hospital'){
+        url = 'http://localhost:3000/api/Hospital/' + username.toString();
+    }else if (type == 'insurance'){
+        url = 'http://localhost:3000/api/InsuranceCompany/' + username.toString();
+
+    }
+
 
     axios.get(url).then(function (response){
         console.log(response.data);
@@ -310,6 +269,8 @@ app.post('/api/patientLogin', function(req, res) {
         checkPassword(response2)
     }).catch(function (error) {
     console.log(error);
+    // send invalid id message here
+        res.end(JSON.stringify({ status: "error" }));
   });
 
 
@@ -319,9 +280,10 @@ app.post('/api/patientLogin', function(req, res) {
       console.log('inside check');
 
       if(password == response.password){
-          res.send('success');
+          res.end(JSON.stringify([{ status: "ok" }]));
+          console.log('here');
       }else{
-          res.send('error');
+        res.end(JSON.stringify([{ status: "incorrect" }]));
       }
       
 
@@ -332,9 +294,6 @@ app.post('/api/patientLogin', function(req, res) {
 
 
 });
-
-
-
 
 
 
@@ -372,7 +331,6 @@ app.post('/api/test', function(req, res) {
     console.log(user_id);
     res.send(user_id);
 });
-
 
 
 
