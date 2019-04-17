@@ -270,6 +270,7 @@ app.post('/api/patientLogin', function(req, res) {
     }).catch(function (error) {
     console.log(error);
     // send invalid id message here
+        res.end(JSON.stringify({ status: "error" }));
   });
 
 
@@ -279,9 +280,10 @@ app.post('/api/patientLogin', function(req, res) {
       console.log('inside check');
 
       if(password == response.password){
-          res.send('success');
+          res.end(JSON.stringify([{ status: "ok" }]));
+          console.log('here');
       }else{
-          res.send('error');
+        res.end(JSON.stringify([{ status: "incorrect" }]));
       }
       
 
