@@ -307,7 +307,44 @@ app.get('/passwordCreation', async function(req, res) {
     
         
         });
+
+
+// API to list hospitals after removing private data
+        app.get('/api/listHospitals', async function(req, res) {
+            console.log('inside get method');
     
+    
+    
+            res.header("Access-Control-Allow-Origin", "*");
+                res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
+                res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+            
+    
+    
+            axios.get('http://localhost:3000/api/Hospital').then(function (response){
+                console.log(response.data);
+                jsonResponse = response.data;
+        
+            }).then(function (response){
+                filterHospitalData();
+            }).catch(function (error) {
+            console.log(error);
+          });
+    
+    
+          function filterHospitalData(){
+            for(var i = 0; i < jsonResponse.length; i++) {
+                delete jsonResponse[i]['password'];
+            }
+    
+            console.log(jsonResponse);
+            res.send(jsonResponse);
+          }
+        
+            
+            });
+
+
 
 
 
