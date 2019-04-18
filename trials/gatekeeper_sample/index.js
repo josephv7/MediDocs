@@ -19,15 +19,20 @@ app.get('/createPatient', async function(req, res) {
     console.log('API Call to create new patient');
     console.log(req.query.firstName);
     console.log(req.query.lastName);
+    console.log(req.query.password);
 
     var jsonResponse;
     var count;
     var aesKey;
+    var hashedPassword;
     
 
     axios.get('http://localhost:3000/api/Patient').then(function (response){
         console.log(response.data);
         jsonResponse = response.data;
+
+        // console.log(SHA256(req.query.password).toString());
+        // hashedPassword = SHA256(req.query.password).toString();
 
     }).then(function (response){
         findPatientCount();
@@ -56,7 +61,7 @@ app.get('/createPatient', async function(req, res) {
                 "lastName" : req.query.lastName,
                 "patientId" : count.toString(),
                 "contentKey" : aesKey,
-                "password" : "adad"
+                "password" : SHA256(req.query.password).toString()
                 
             })
         }, (error, response, body) => {
@@ -255,6 +260,9 @@ app.post('/api/patientLogin', function(req, res) {
         url = 'http://localhost:3000/api/Hospital/' + username.toString();
     }else if (type == 'insurance'){
         url = 'http://localhost:3000/api/InsuranceCompany/' + username.toString();
+
+    }else if (type == 'regulator'){
+        url = 'http://localhost:3000/api/Regulator/' + username.toString();
 
     }
 
