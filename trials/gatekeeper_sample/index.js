@@ -13,6 +13,77 @@ let app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+// API to create new hospital
+
+app.get('/createHospital', async function(req, res) {
+    console.log('API Call to create new patient');
+    console.log(req.query.hospitalName);
+    console.log(req.query.password);
+
+    var jsonResponse;
+    var count;
+    var aesKey;
+    var hashedPassword;
+    
+
+    axios.get('http://localhost:3000/api/Hospital').then(function (response){
+        console.log(response.data);
+        jsonResponse = response.data;
+
+        // console.log(SHA256(req.query.password).toString());
+        // hashedPassword = SHA256(req.query.password).toString();
+
+    }).then(function (response){
+        findPatientCount();
+    }).catch(function (error) {
+    console.log(error);
+  });
+
+
+  function findPatientCount(){
+
+
+    count =  4001 + jsonResponse.length;
+
+    
+
+    // openssl('openssl enc -aes-128-cbc -k secret -P -md sha1', function (err, buffer) {
+    //     console.log(err.toString(), buffer.toString());
+    //     aesKey = buffer.toString().substr(26,32);
+    //     console.log(aesKey);
+
+        Request.post({
+            "headers": { "content-type": "application/json" },
+            "url": "http://localhost:3000/api/Hospital",
+            "body": JSON.stringify({
+                "hospitalName" : req.query.hospitalName,
+                "hospitalId" : count.toString(),
+                "password" : SHA256(req.query.password).toString()
+                
+            })
+        }, (error, response, body) => {
+            if(error) {
+                return console.dir(error);
+            }
+            console.dir(JSON.parse(body));
+        });
+
+        // });
+
+  }
+  
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+});
+
+
+
+
+
+
+
+
 
 // API Call to create new patient
 app.get('/createPatient', async function(req, res) {
@@ -87,6 +158,7 @@ app.get('/createDoctor', async function(req, res) {
     console.log('API Call to create new patient');
     console.log(req.query.firstName);
     console.log(req.query.lastName);
+    console.log(req.query.password);
 
     var jsonResponse;
     var count;
@@ -150,7 +222,7 @@ app.get('/createDoctor', async function(req, res) {
                 "firstName" : req.query.firstName,
                 "lastName" : req.query.lastName,
                 "doctorId" : count.toString(),
-                "password" : "adad",
+                "password" : SHA256(req.query.password).toString(),
                 "publicKey" : publicKey,
                 "privateKey" : privateKey
                 
@@ -177,8 +249,8 @@ app.get('/createDoctor', async function(req, res) {
 
 
 
-
-// API for password creation from web portal
+// Deprecated
+// API for password creation from web portal 
 app.get('/passwordCreation', async function(req, res) {
     console.log('inside get method');
     console.log(req.query.password);
