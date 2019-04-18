@@ -312,7 +312,7 @@ app.get('/passwordCreation', async function(req, res) {
 
 
 // API for patient login
-app.post('/api/patientLogin', function(req, res) {
+app.post('/api/userLogin', function(req, res) {
     var username = req.body.username;
     var password = req.body.password;
     var type = req.body.type;
