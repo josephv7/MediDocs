@@ -159,10 +159,12 @@ app.get('/createDoctor', async function(req, res) {
     console.log(req.query.firstName);
     console.log(req.query.lastName);
     console.log(req.query.password);
+    console.log(req.query.hospitalId);
 
     var jsonResponse;
     var count;
     var data;
+    var fullId = 'org.example.basic.Hospital#' + req.query.hospitalId;
     
 
     axios.get('http://localhost:3000/api/Doctor').then(function (response){
@@ -179,7 +181,7 @@ app.get('/createDoctor', async function(req, res) {
   function findDoctorCount(){
 
 
-    count =  3002 + jsonResponse.length;
+    count =  3020 + jsonResponse.length;
 
 
     // openssl genrsa -out rsa_1024_priv.pem 1024
@@ -222,6 +224,7 @@ app.get('/createDoctor', async function(req, res) {
                 "firstName" : req.query.firstName,
                 "lastName" : req.query.lastName,
                 "doctorId" : count.toString(),
+                "hospital" : fullId,
                 "password" : SHA256(req.query.password).toString(),
                 "publicKey" : publicKey,
                 "privateKey" : privateKey
@@ -448,6 +451,77 @@ app.post('/api/test', function(req, res) {
     console.log(user_id);
     res.send(user_id);
 });
+
+
+
+
+
+// API to create medical record
+app.post('/api/createRecord', function(req, res) {
+    var username = req.body.username;
+    var password = req.body.password;
+    var type = req.body.type;
+    
+
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+
+
+    var url;
+    if(type == 'patient'){
+        url = 'http://localhost:3000/api/Patient/' + username.toString();
+    }else if(type == 'doctor'){
+        url = 'http://localhost:3000/api/Doctor/' + username.toString();
+    }else if(type == 'hospital'){
+        url = 'http://localhost:3000/api/Hospital/' + username.toString();
+    }else if (type == 'insurance'){
+        url = 'http://localhost:3000/api/InsuranceCompany/' + username.toString();
+
+    }else if (type == 'regulator'){
+        url = 'http://localhost:3000/api/Regulator/' + username.toString();
+
+    }
+
+
+    axios.get(url).then(function (response){
+        console.log(response.data);
+        jsonResponse = response.data;
+        
+
+    }).then(function (response){
+        var response2 = jsonResponse;
+        checkPassword(response2)
+    }).catch(function (error) {
+    console.log(error);
+    // send invalid id message here
+        res.end(JSON.stringify({ status: "error" }));
+  });
+
+
+  function checkPassword(response){
+      console.log(response);
+      console.log(response.password);
+      console.log('inside check');
+
+      if(password == response.password){
+          res.end(JSON.stringify([{ status: "ok" }]));
+          console.log('here');
+      }else{
+        res.end(JSON.stringify([{ status: "incorrect" }]));
+      }
+      
+
+  }
+
+    console.log(password);
+    console.log(username);
+
+
+});
+
+
+
 
 
 
