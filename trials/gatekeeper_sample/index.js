@@ -276,7 +276,7 @@ app.get('/passwordCreation', async function(req, res) {
 
 
 
-
+// For patient, hospital, and regulator
 // API to list doctors after removing private data
     app.get('/api/listDoctors', async function(req, res) {
         console.log('inside get method');
@@ -313,7 +313,7 @@ app.get('/passwordCreation', async function(req, res) {
         
         });
 
-
+// For regulators
 // API to list hospitals after removing private data
         app.get('/api/listHospitals', async function(req, res) {
             console.log('inside get method');
@@ -639,6 +639,100 @@ app.get('/recordVerification', async function(req, res) {
         res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     
     });
+
+
+
+
+
+    app.get('/api/hospitalDoctorList', async function(req, res) {
+        console.log('inside get method');
+        console.log(req.query.hospitalid);
+        var hospitalid = req.query.hospitalid;
+
+        var hospitalDoctorString = 'http://localhost:3000/api/queries/HospitalDoctorList?id=resource%3Aorg.example.basic.Hospital%23' + hospitalid;
+        
+    
+        
+        res.header("Access-Control-Allow-Origin", "*");
+            res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
+            res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+        
+
+
+
+            axios.get(hospitalDoctorString).then(function (response){
+                console.log(response.data);
+                jsonResponse = response.data;
+        
+            }).then(function (response){
+                filterHospitalData();
+            }).catch(function (error) {
+            console.log(error);
+          });
+    
+    
+          function filterHospitalData(){
+            for(var i = 0; i < jsonResponse.length; i++) {
+                delete jsonResponse[i]['password'];
+                delete jsonResponse[i]['privateKey'];
+            }
+    
+            console.log(jsonResponse);
+            res.send(jsonResponse);
+          }
+
+
+
+
+        });
+
+
+
+
+
+
+
+        app.get('/api/listPatientRecords', async function(req, res) {
+            console.log('inside get method');
+            console.log(req.query.patientId);
+            var patientId = req.query.patientId;
+            var listType = req.query.listType;
+            // verified, unverified or all can be the type
+
+
+            var patientRecordString;
+
+            if(listType == 'verified'){
+                patientRecordString = 'http://localhost:3000/api/queries/VerifiedPatientRecords?id=resource%3Aorg.example.basic.Patient%23' + patientId;
+            }else if(listType == 'unverified'){
+                patientRecordString = 'http://localhost:3000/api/queries/UnVerifiedPatientRecords?id=resource%3Aorg.example.basic.Patient%23' + patientId;
+            }else if(listType == 'all'){
+                patientRecordString = 'http://localhost:3000/api/queries/ListByPatient?id=resource%3Aorg.example.basic.Patient%23' + patientId;
+
+            }
+    
+        
+            
+            res.header("Access-Control-Allow-Origin", "*");
+                res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
+                res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+            
+    
+    
+    
+                axios.get(patientRecordString).then(function (response){
+                    console.log(response.data);
+                    jsonResponse = response.data;
+            
+                }).then(function (response){
+                    res.send(jsonResponse);
+                }).catch(function (error) {
+                console.log(error);
+              });
+        
+            });
+
+
 
 
 
