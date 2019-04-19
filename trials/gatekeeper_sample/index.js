@@ -9,6 +9,7 @@ const fs = require('fs');
 const cmd=require('node-cmd');
 const SHA256 = require("crypto-js/sha256");
 const CryptoJS = require("crypto-js");
+const IPFS = require('ipfs');
 
 let app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -466,6 +467,8 @@ app.post('/api/createRecord', function(req, res) {
     console.log(req.body.username);
     console.log(req.body.content);
 
+    var fileHash;
+
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
@@ -504,39 +507,93 @@ app.post('/api/createRecord', function(req, res) {
         // hashedPassword = SHA256(req.query.password).toString();
 
     }).then(function (response){
-        encryptData();
+        putData();
     }).catch(function (error) {
     console.log(error);
   });
 
 
-  function encryptData(){
+  function putData(){
 
-    var encryptedData = CryptoJS.AES.encrypt(req.body.content,patientKey).toString();
-    console.log(encryptedData);
+    // var encryptedData = CryptoJS.AES.encrypt(req.body.content,patientKey).toString();
+    // console.log(encryptedData);
 
-
-
-    Request.post({
-        "headers": { "content-type": "application/json" },
-        "url": "http://localhost:3000/api/MedicalRecord",
-        "body": JSON.stringify({
-            "recordId": calculatedId,
-            "owner" : ownerName,
-            "value" : [encryptedData],
-            "doctorId" : [doctorname],
-            "verified" : 'false'
-        })
-    }, (error, response, body) => {
-        if(error) {
-            return console.dir(error);
-        }
-        console.dir(JSON.parse(body));
-    });
+//////////////////
 
     
 
+
+const node = new IPFS()
+node.on('ready', async () => {
+    console.log('iniside sample code')
+
+
+    var date = new Date();
+    var timeStampString = date.getDate() + '_' + date.getHours() + '_' + date.getMinutes() + '_' + date.getSeconds() + '.txt';
+    console.log('trial')
+    console.log(timeStampString);
+  
+    const filesAdded = await node.add({
+        path: timeStampString,
+      content: Buffer.from('Patient Record11 ' + CryptoJS.AES.encrypt(req.body.content,patientKey).toString())
+    })
+  
+    console.log('Added file:', filesAdded[0].path, filesAdded[0].hash)
+
+    fileHash = filesAdded[0].hash;
+    console.log('After getting filehash')
+    console.log(fileHash)
+    // res.send(fileHash);
+    try {
+        await node.stop()
+        console.log('Node stopped!')
+        Request.post({
+            "headers": { "content-type": "application/json" },
+            "url": "http://localhost:3000/api/MedicalRecord",
+            "body": JSON.stringify({
+                "recordId": calculatedId,
+                "owner" : ownerName,
+                "value" : [fileHash],
+                "doctorId" : [doctorname],
+                "verified" : 'false'
+            })
+        }, (error, response, body) => {
+            if(error) {
+                return console.dir(error);
+            }
+            console.dir(JSON.parse(body));
+        });
+      } catch (error) {
+        console.error('Node failed to stop cleanly!', error)
+      }
+
+  
+  })
+  
   }
+/////////////////
+
+// function addToBlockchain(){
+//     Request.post({
+//         "headers": { "content-type": "application/json" },
+//         "url": "http://localhost:3000/api/MedicalRecord",
+//         "body": JSON.stringify({
+//             "recordId": calculatedId,
+//             "owner" : ownerName,
+//             "value" : [fileHash],
+//             "doctorId" : [doctorname],
+//             "verified" : 'false'
+//         })
+//     }, (error, response, body) => {
+//         if(error) {
+//             return console.dir(error);
+//         }
+//         console.dir(JSON.parse(body));
+//     });
+
+    
+// }
+  
 
   }
 
