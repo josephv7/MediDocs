@@ -197,9 +197,9 @@ app.get('/createDoctor', async function(req, res) {
 
 
     
-    cmd.run(finalCommand)
+    cmd.get(finalCommand,getKeyData);
 
-    getKeyData();
+    // getKeyData();
     
     
   }
@@ -639,12 +639,6 @@ app.get('/recordVerification', async function(req, res) {
         res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     
     });
-
-
-
-
-
-
 
 
 
