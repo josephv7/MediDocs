@@ -695,9 +695,22 @@ app.get('/recordVerification', async function(req, res) {
         app.get('/api/listPatientRecords', async function(req, res) {
             console.log('inside get method');
             console.log(req.query.patientId);
-            var patientid = req.query.patientId;
+            var patientId = req.query.patientId;
+            var listType = req.query.listType;
+            // verified, unverified or all can be the type
+
+
+            var patientRecordString;
+
+            if(listType == 'verified'){
+                patientRecordString = 'http://localhost:3000/api/queries/VerifiedPatientRecords?id=resource%3Aorg.example.basic.Patient%23' + patientId;
+            }else if(listType == 'unverified'){
+                patientRecordString = 'http://localhost:3000/api/queries/UnVerifiedPatientRecords?id=resource%3Aorg.example.basic.Patient%23' + patientId;
+            }else if(listType == 'all'){
+                patientRecordString = 'http://localhost:3000/api/queries/ListByPatient?id=resource%3Aorg.example.basic.Patient%23' + patientId;
+
+            }
     
-            var patientRecordString = 'http://localhost:3000/api/queries/ListByPatient?id=resource%3Aorg.example.basic.Patient%23' + patientid;
         
             
             res.header("Access-Control-Allow-Origin", "*");
@@ -717,20 +730,6 @@ app.get('/recordVerification', async function(req, res) {
                 console.log(error);
               });
         
-        
-            //   function filterHospitalData(){
-            //     for(var i = 0; i < jsonResponse.length; i++) {
-            //         delete jsonResponse[i]['password'];
-            //         delete jsonResponse[i]['privateKey'];
-            //     }
-        
-            //     console.log(jsonResponse);
-            //     res.send(jsonResponse);
-            //   }
-    
-    
-    
-    
             });
 
 
