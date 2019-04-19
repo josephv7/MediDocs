@@ -737,6 +737,52 @@ app.get('/recordVerification', async function(req, res) {
 
 
 
+
+// API to return list of records shared with a doctor
+
+            app.get('/api/listDoctorRecords', async function(req, res) {
+                console.log('inside get method');
+                console.log(req.query.doctorId);
+                var doctorId = req.query.doctorId;
+                
+               
+                var doctorRecordString = 'http://localhost:3000/api/queries/ListRecordDoctor?id=' + doctorId;
+    
+                
+                
+                res.header("Access-Control-Allow-Origin", "*");
+                    res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
+                    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+                
+        
+        
+        
+                    axios.get(doctorRecordString).then(function (response){
+                        console.log(response.data);
+                        jsonResponse = response.data;
+                
+                    }).then(function (response){
+                        filterRecordData()
+                    }).catch(function (error) {
+                    console.log(error);
+                  });
+
+
+                  function filterRecordData(){
+                    for(var i = 0; i < jsonResponse.length; i++) {
+                        delete jsonResponse[i]['doctorId'];
+                    }
+            
+                    console.log(jsonResponse);
+                    res.send(jsonResponse);
+                  }
+            
+                });
+
+
+
+
+
   let server = app.listen(5001, function() {
       console.log('Server is listening on port 5001')
   });
