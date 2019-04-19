@@ -573,89 +573,12 @@ node.on('ready', async () => {
   }
 /////////////////
 
-// function addToBlockchain(){
-//     Request.post({
-//         "headers": { "content-type": "application/json" },
-//         "url": "http://localhost:3000/api/MedicalRecord",
-//         "body": JSON.stringify({
-//             "recordId": calculatedId,
-//             "owner" : ownerName,
-//             "value" : [fileHash],
-//             "doctorId" : [doctorname],
-//             "verified" : 'false'
-//         })
-//     }, (error, response, body) => {
-//         if(error) {
-//             return console.dir(error);
-//         }
-//         console.dir(JSON.parse(body));
-//     });
-
-    
-// }
-  
-
   }
 
 
 
 
-
-//     var url;
-//     if(type == 'patient'){
-//         url = 'http://localhost:3000/api/Patient/' + username.toString();
-//     }else if(type == 'doctor'){
-//         url = 'http://localhost:3000/api/Doctor/' + username.toString();
-//     }else if(type == 'hospital'){
-//         url = 'http://localhost:3000/api/Hospital/' + username.toString();
-//     }else if (type == 'insurance'){
-//         url = 'http://localhost:3000/api/InsuranceCompany/' + username.toString();
-
-//     }else if (type == 'regulator'){
-//         url = 'http://localhost:3000/api/Regulator/' + username.toString();
-
-//     }
-
-
-//     axios.get(url).then(function (response){
-//         console.log(response.data);
-//         jsonResponse = response.data;
-        
-
-//     }).then(function (response){
-//         var response2 = jsonResponse;
-//         checkPassword(response2)
-//     }).catch(function (error) {
-//     console.log(error);
-//     // send invalid id message here
-//         res.end(JSON.stringify({ status: "error" }));
-//   });
-
-
-//   function checkPassword(response){
-//       console.log(response);
-//       console.log(response.password);
-//       console.log('inside check');
-
-//       if(password == response.password){
-//           res.end(JSON.stringify([{ status: "ok" }]));
-//           console.log('here');
-//       }else{
-//         res.end(JSON.stringify([{ status: "incorrect" }]));
-//       }
-      
-
-//   }
-
-//     console.log(password);
-//     console.log(username);
-
-
 });
-
-
-
-
 
 
 
