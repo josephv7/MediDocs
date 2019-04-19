@@ -691,6 +691,53 @@ app.get('/recordVerification', async function(req, res) {
 
 
 
+
+        app.get('/api/listPatientRecords', async function(req, res) {
+            console.log('inside get method');
+            console.log(req.query.patientId);
+            var patientid = req.query.patientId;
+    
+            var patientRecordString = 'http://localhost:3000/api/queries/ListByPatient?id=resource%3Aorg.example.basic.Patient%23' + patientid;
+        
+            
+            res.header("Access-Control-Allow-Origin", "*");
+                res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
+                res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+            
+    
+    
+    
+                axios.get(patientRecordString).then(function (response){
+                    console.log(response.data);
+                    jsonResponse = response.data;
+            
+                }).then(function (response){
+                    res.send(jsonResponse);
+                }).catch(function (error) {
+                console.log(error);
+              });
+        
+        
+            //   function filterHospitalData(){
+            //     for(var i = 0; i < jsonResponse.length; i++) {
+            //         delete jsonResponse[i]['password'];
+            //         delete jsonResponse[i]['privateKey'];
+            //     }
+        
+            //     console.log(jsonResponse);
+            //     res.send(jsonResponse);
+            //   }
+    
+    
+    
+    
+            });
+
+
+
+
+
+
   let server = app.listen(5001, function() {
       console.log('Server is listening on port 5001')
   });
