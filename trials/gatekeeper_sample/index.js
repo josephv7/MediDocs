@@ -353,7 +353,7 @@ app.get('/passwordCreation', async function(req, res) {
 
 
 
-// API for patient login
+// API for user login
 app.post('/api/userLogin', function(req, res) {
     var username = req.body.username;
     var password = req.body.password;
@@ -573,85 +573,75 @@ node.on('ready', async () => {
   }
 /////////////////
 
-// function addToBlockchain(){
-//     Request.post({
-//         "headers": { "content-type": "application/json" },
-//         "url": "http://localhost:3000/api/MedicalRecord",
-//         "body": JSON.stringify({
-//             "recordId": calculatedId,
-//             "owner" : ownerName,
-//             "value" : [fileHash],
-//             "doctorId" : [doctorname],
-//             "verified" : 'false'
-//         })
-//     }, (error, response, body) => {
-//         if(error) {
-//             return console.dir(error);
-//         }
-//         console.dir(JSON.parse(body));
-//     });
-
-    
-// }
-  
-
   }
 
 
 
 
-
-//     var url;
-//     if(type == 'patient'){
-//         url = 'http://localhost:3000/api/Patient/' + username.toString();
-//     }else if(type == 'doctor'){
-//         url = 'http://localhost:3000/api/Doctor/' + username.toString();
-//     }else if(type == 'hospital'){
-//         url = 'http://localhost:3000/api/Hospital/' + username.toString();
-//     }else if (type == 'insurance'){
-//         url = 'http://localhost:3000/api/InsuranceCompany/' + username.toString();
-
-//     }else if (type == 'regulator'){
-//         url = 'http://localhost:3000/api/Regulator/' + username.toString();
-
-//     }
-
-
-//     axios.get(url).then(function (response){
-//         console.log(response.data);
-//         jsonResponse = response.data;
-        
-
-//     }).then(function (response){
-//         var response2 = jsonResponse;
-//         checkPassword(response2)
-//     }).catch(function (error) {
-//     console.log(error);
-//     // send invalid id message here
-//         res.end(JSON.stringify({ status: "error" }));
-//   });
-
-
-//   function checkPassword(response){
-//       console.log(response);
-//       console.log(response.password);
-//       console.log('inside check');
-
-//       if(password == response.password){
-//           res.end(JSON.stringify([{ status: "ok" }]));
-//           console.log('here');
-//       }else{
-//         res.end(JSON.stringify([{ status: "incorrect" }]));
-//       }
-      
-
-//   }
-
-//     console.log(password);
-//     console.log(username);
-
-
 });
+
+
+
+
+
+
+app.get('/recordVerification', async function(req, res) {
+    console.log('inside get method');
+    console.log(req.query.recordid);
+    console.log(req.query.username);
+
+    var username = req.query.username;
+    var recordid = req.query.recordid;
+
+    var recordUrl = 'http://localhost:3000/api/MedicalRecord/' + recordid;
+    var ownerString = 'resource:org.example.basic.Patient#' + username;
+    var recordString = 'org.example.basic.MedicalRecord#' + recordid;
+
+
+    axios.get(recordUrl).then(function (response){
+        console.log(response.data);
+        jsonResponse = response.data;
+        ownerName = jsonResponse['owner'];
+        console.log(ownerName);
+
+        // console.log(SHA256(req.query.password).toString());
+        // hashedPassword = SHA256(req.query.password).toString();
+
+    }).then(function (response){
+        if(ownerName == ownerString){
+            doVerification()
+        }
+    }).catch(function (error) {
+    console.log(error);
+  });
+
+
+  function doVerification(){
+    Request.post({
+        "headers": { "content-type": "application/json" },
+        "url": "http://localhost:3000/api/RecordVerification",
+        "body": JSON.stringify({
+            "asset": recordString,
+            "newVerified" : 'true'
+        })
+    }, (error, response, body) => {
+        if(error) {
+            return console.dir(error);
+        }
+        console.dir(JSON.parse(body));
+    });
+  }
+    
+
+    
+    res.header("Access-Control-Allow-Origin", "*");
+        res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
+        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    
+    });
+
+
+
 
 
 
