@@ -11,6 +11,14 @@ const SHA256 = require("crypto-js/sha256");
 const CryptoJS = require("crypto-js");
 const IPFS = require('ipfs');
 
+
+const config = require("./config");
+const accountSid = config.accountSid;
+const authToken = config.authToken;
+const client = require('twilio')(accountSid, authToken);
+
+
+
 let app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -561,6 +569,17 @@ node.on('ready', async () => {
             if(error) {
                 return console.dir(error);
             }
+
+
+            client.messages.create({
+          body: 'Record Created for patient' + username,
+          from: 'whatsapp:+14155238886',
+          to: 'whatsapp:+918289940688'
+        })
+        .then(message => console.log(message.sid))
+        .done();
+
+
             console.dir(JSON.parse(body));
         });
       } catch (error) {

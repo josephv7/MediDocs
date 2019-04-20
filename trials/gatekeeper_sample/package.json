@@ -15,6 +15,7 @@
     "ipfs": "^0.34.4",
     "node-cmd": "^3.0.0",
     "openssl-nodejs": "^1.0.5",
-    "request": "^2.88.0"
+    "request": "^2.88.0",
+    "twilio": "^3.30.1"
   }
 }
