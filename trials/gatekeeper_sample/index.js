@@ -801,6 +801,43 @@ app.get('/recordVerification', async function(req, res) {
 
 
 
+// API to share record with new doctor
+app.get('/api/shareDoctor', async function(req, res) {
+    console.log('inside get method');
+    console.log(req.query.recordid);
+    console.log(req.query.doctorid);
+
+    var recordid = req.query.recordid;
+    var doctorid = req.query.doctorid;
+
+    var recordString = 'org.example.basic.MedicalRecord#' + recordid;
+    
+    
+    Request.post({
+        "headers": { "content-type": "application/json" },
+        "url": "http://localhost:3000/api/ShareDoctor",
+        "body": JSON.stringify({
+            "asset": recordString,
+            "newDoctorId": [doctorid]
+        })
+    }, (error, response, body) => {
+        if(error) {
+            return console.dir(error);
+        }
+        console.dir(JSON.parse(body));
+    });
+    
+    res.header("Access-Control-Allow-Origin", "*");
+        res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
+        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    
+    });
+
+
+
+
+    
+
 
   let server = app.listen(5001, function() {
       console.log('Server is listening on port 5001')
