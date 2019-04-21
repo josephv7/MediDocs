@@ -10,6 +10,7 @@ const cmd=require('node-cmd');
 const SHA256 = require("crypto-js/sha256");
 const CryptoJS = require("crypto-js");
 const IPFS = require('ipfs');
+const fetch = require('node-fetch');
 
 
 const config = require("./config");
@@ -362,6 +363,7 @@ app.get('/passwordCreation', async function(req, res) {
 
 
 // API for user login
+// Store username as well as aesKey/contentKey in sharedpref....android
 app.post('/api/userLogin', function(req, res) {
     var username = req.body.username;
     var password = req.body.password;
@@ -543,7 +545,7 @@ node.on('ready', async () => {
   
     const filesAdded = await node.add({
         path: timeStampString,
-      content: Buffer.from('Patient Record11 ' + CryptoJS.AES.encrypt(req.body.content,patientKey).toString())
+      content: Buffer.from(CryptoJS.AES.encrypt(req.body.content,patientKey).toString())
     })
   
     console.log('Added file:', filesAdded[0].path, filesAdded[0].hash)
@@ -832,6 +834,46 @@ app.get('/api/shareDoctor', async function(req, res) {
         res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     
     });
+
+
+
+
+// API for patient to read his record 
+// Make sure to check username in sharedpref is same as record owner befor making this api call from the android side
+    app.get('/api/patientReadRecord', async function(req, res) {
+        console.log('inside get method');
+        console.log(req.query.recordHash);
+        // console.log(req.query.doctorid);
+    
+        var recordHash = req.query.recordHash;
+        // var doctorid = req.query.doctorid;
+    
+        // var recordUrl = 'org.example.basic.MedicalRecord#' + recordid;
+        var recordUrl = 'http://localhost:9090/ipfs/' + recordHash;
+        
+        fetch(recordUrl)
+    .then(res => res.text())
+    .then(body => console.log(body));
+        
+        // Request.post({
+        //     "headers": { "content-type": "application/json" },
+        //     "url": "http://localhost:3000/api/ShareDoctor",
+        //     "body": JSON.stringify({
+        //         "asset": recordString,
+        //         "newDoctorId": [doctorid]
+        //     })
+        // }, (error, response, body) => {
+        //     if(error) {
+        //         return console.dir(error);
+        //     }
+        //     console.dir(JSON.parse(body));
+        // });
+        
+        res.header("Access-Control-Allow-Origin", "*");
+            res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
+            res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+        
+        });
 
 
 
