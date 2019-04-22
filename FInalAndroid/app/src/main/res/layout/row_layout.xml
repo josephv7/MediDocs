@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+
+
 <TableLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -100,8 +103,17 @@
 
         <Button
             android:id="@+id/bt1"
-            android:layout_gravity="center_horizontal"
-            android:text="bt"/>
+            android:text="bt" />
+
+
+
+    </TableRow>
+
+    <TableRow>
+
+    <Button
+        android:id="@+id/bt2"
+        android:text="VIEW" />
 
 
     </TableRow>
@@ -130,4 +142,8 @@
 
 
 </TableLayout>
+
+
+
+
 

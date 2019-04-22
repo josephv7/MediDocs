@@ -20,7 +20,8 @@
         </activity>
         <activity android:name=".Splash" />
         <activity android:name=".Login" />
-        <activity android:name=".ViewRecord"></activity>
+        <activity android:name=".ViewRecord" />
+        <activity android:name=".RecordView"></activity>
     </application>
 
 </manifest>

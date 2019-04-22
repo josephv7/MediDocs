@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -47,6 +48,8 @@ public class VerifiedFragment extends Fragment {
     private RecyclerView recyclerView;
     private VerifiedAdapter mAdapter;
 
+    Button bt1,bt2;
+
 
 
     // newInstance constructor for creating fragment with arguments
@@ -69,6 +72,8 @@ public class VerifiedFragment extends Fragment {
 
 
 
+
+
     }
 
     // Inflate the view for the fragment based on layout XML
@@ -79,6 +84,9 @@ public class VerifiedFragment extends Fragment {
 
 
         recyclerView = (RecyclerView)view.findViewById(R.id.recycler_view);
+
+        bt1 = view.findViewById(R.id.bt1);
+        bt2 = view.findViewById(R.id.bt2);
 
         pd = view.findViewById(R.id.pd);
 
@@ -149,6 +157,7 @@ public class VerifiedFragment extends Fragment {
 
                     }
                 }
+
 
 
 
