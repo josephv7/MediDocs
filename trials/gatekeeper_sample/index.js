@@ -878,6 +878,44 @@ app.get('/api/shareDoctor', async function(req, res) {
 
 
 
+
+
+
+
+// API to get patient aes key
+        app.get('/api/patientKey', async function(req, res) {
+            console.log('inside get method');
+            console.log(req.query.patientid);
+            // console.log(req.query.doctorid);
+        
+            var patientid = req.query.patientid;
+        
+            // var recordUrl = 'org.example.basic.MedicalRecord#' + recordid;
+            var patientUrl = 'http://localhost:3000/api/Patient/' + patientid;
+        
+            
+            axios.get(patientUrl).then(function (response){
+                console.log(response.data);
+                jsonResponse = response.data;
+        
+            }).then(function (response){
+                res.send(JSON.stringify({contentKey :jsonResponse['contentKey']}));
+                // res.send(jsonResponse['contentKey']);
+            }).catch(function (error) {
+            console.log(error);
+          });
+            
+        
+            
+            res.header("Access-Control-Allow-Origin", "*");
+                res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
+                res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+            
+            });
+    
+
+
+
     
 
 
