@@ -10,6 +10,7 @@ import android.widget.Button;
 public class Home extends AppCompatActivity {
 
     Button logOut;
+    Button viewRecord;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,6 +18,7 @@ public class Home extends AppCompatActivity {
         setContentView(R.layout.activity_home);
 
         logOut = findViewById(R.id.logOut);
+        viewRecord = findViewById(R.id.viewRecord);
 
         logOut.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -33,6 +35,17 @@ public class Home extends AppCompatActivity {
                 finish();
 
 
+            }
+        });
+
+        viewRecord.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                Intent viewIntent = new Intent(Home.this,ViewRecord.class);
+                startActivity(viewIntent);
+                finish();
             }
         });
     }
