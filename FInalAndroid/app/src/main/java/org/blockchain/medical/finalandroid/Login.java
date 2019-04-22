@@ -11,6 +11,9 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.google.common.hash.Hashing;
+
+import java.nio.charset.Charset;
 import java.util.List;
 
 import retrofit2.Call;
@@ -26,6 +29,7 @@ public class Login extends AppCompatActivity {
     Button login;
     String loginStatus;
     ProgressBar pd;
+    String generatedHash;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +68,11 @@ public class Login extends AppCompatActivity {
 
         Api api = retrofit.create(Api.class);
 
-        Call<List<LoginStatus>> call = api.postLogin(name.getText().toString(),password.getText().toString(),"patient");
+        generatedHash = Hashing.sha256()
+                        .hashString(password.getText().toString(),Charset.forName("UTF-8"))
+                        .toString();
+
+        Call<List<LoginStatus>> call = api.postLogin(name.getText().toString(),generatedHash,"patient");
 
         call.enqueue(new Callback<List<LoginStatus>>() {
             @Override
@@ -105,6 +113,8 @@ public class Login extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+
+
 
 
 
