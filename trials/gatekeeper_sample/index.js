@@ -11,6 +11,9 @@ const SHA256 = require("crypto-js/sha256");
 const CryptoJS = require("crypto-js");
 const IPFS = require('ipfs');
 const fetch = require('node-fetch');
+// const JSEncrypt = require('jsencrypt');
+const NodeRSA = require('node-rsa');
+const crypto = require("crypto");
 
 
 const config = require("./config");
@@ -362,7 +365,7 @@ app.get('/passwordCreation', async function(req, res) {
 
 
 
-// API for user login
+// API for user patinetKey
 // Store username as well as aesKey/contentKey in sharedpref....android
 app.post('/api/userLogin', function(req, res) {
     var username = req.body.username;
@@ -843,31 +846,15 @@ app.get('/api/shareDoctor', async function(req, res) {
     app.get('/api/patientReadRecord', async function(req, res) {
         console.log('inside get method');
         console.log(req.query.recordHash);
-        // console.log(req.query.doctorid);
     
         var recordHash = req.query.recordHash;
-        // var doctorid = req.query.doctorid;
     
-        // var recordUrl = 'org.example.basic.MedicalRecord#' + recordid;
         var recordUrl = 'http://localhost:9090/ipfs/' + recordHash;
         
         fetch(recordUrl)
     .then(res => res.text())
     .then(body => console.log(body));
         
-        // Request.post({
-        //     "headers": { "content-type": "application/json" },
-        //     "url": "http://localhost:3000/api/ShareDoctor",
-        //     "body": JSON.stringify({
-        //         "asset": recordString,
-        //         "newDoctorId": [doctorid]
-        //     })
-        // }, (error, response, body) => {
-        //     if(error) {
-        //         return console.dir(error);
-        //     }
-        //     console.dir(JSON.parse(body));
-        // });
         
         res.header("Access-Control-Allow-Origin", "*");
             res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
@@ -913,6 +900,118 @@ app.get('/api/shareDoctor', async function(req, res) {
             
             });
     
+
+
+
+
+
+
+
+
+// API for doctor to get patient aes key encrypted with doctor public key
+            app.get('/api/encryptionKey', async function(req, res) {
+                console.log('inside get method');
+                console.log(req.query.patientid);
+                console.log(req.query.recordid);
+                console.log(req.query.doctorid);
+                // console.log(req.query.doctorid);
+
+                res.header("Access-Control-Allow-Origin", "*");
+                    res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
+                    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+                
+            
+            
+                var patientid = req.query.patientid;
+                var recordid = req.query.recordid;
+                var doctorid = req.query.doctorid;
+            
+                // var recordUrl = 'org.example.basic.MedicalRecord#' + recordid;
+                var patientUrl = 'http://localhost:3000/api/Patient/' + patientid;
+                var recordUrl = 'http://localhost:3000/api/MedicalRecord/' + recordid;
+                var doctorUrl = 'http://localhost:3000/api/Doctor/' + doctorid;
+
+
+                
+                
+                axios.get(patientUrl).then(function (response){
+                    console.log(response.data);
+                    keyResponse = response.data['contentKey'];
+            
+                }).then(function (response){
+                    // res.send(JSON.stringify({contentKey :jsonResponse['contentKey']}));
+                    // res.send(jsonResponse['contentKey']);
+                    getFileHash()
+                }).catch(function (error) {
+                console.log(error);
+              });
+
+
+              function getFileHash(){
+                axios.get(recordUrl).then(function (response){
+                    console.log(response.data);
+                    dataResponse = response.data['value'][0];
+            
+                }).then(function (response){
+                    // res.send(JSON.stringify({key : keyResponse, data : dataResponse}));
+                    // res.send(jsonResponse['contentKey']);
+                    getDoctorKey()
+                    
+                }).catch(function (error) {
+                console.log(error);
+              });
+
+              }
+                
+            
+            function getDoctorKey(){
+
+                axios.get(doctorUrl).then(function (response){
+                    console.log(response.data);
+                    doctorResponse = response.data['publicKey'];
+                    doctorResp = response.data['privateKey'];
+            
+                }).then(function (response){
+                    // res.send(JSON.stringify({key : keyResponse, data : dataResponse, publicKey : doctorResponse}));
+                    console.log('doctor ' + doctorResponse);
+                    encryptKey()
+                }).catch(function (error) {
+                console.log(error);
+              });
+
+
+            }
+
+
+
+            function encryptKey(){
+
+                var message = 'abcd';
+                console.log('xxxxxxx' + doctorResponse.substring(0, doctorResponse.length - 1));
+                var encrypted = crypto.publicEncrypt(doctorResponse.substring(0, doctorResponse.length - 1),Buffer.from(message));
+
+                console.log(encrypted.toString("base64"));
+
+                // const key = new NodeRSA(doctorResponse.substring(0, doctorResponse.length - 1))
+                // key.importKey(keyData, 'pkcs8');
+
+
+                var decrypted = crypto.privateDecrypt(doctorResp.substring(0, doctorResp.length - 1),Buffer.from(encrypted));
+
+                console.log('-----');
+                console.log(decrypted.toString("utf8"));
+
+                // console.log('key' + key.getKeySize());
+
+                // console.log(key.encrypt('abc').toString());
+
+
+            }
+                
+                
+                });
+
+
 
 
 
