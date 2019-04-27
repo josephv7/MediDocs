@@ -1,6 +1,7 @@
 package org.blockchain.medical.finalandroid;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -103,7 +104,9 @@ public class UnverifiedFragment extends Fragment {
         Api api = retrofit.create(Api.class);
 
 
-        Call<List<RecordResponse>> call = api.getRecord("2001","unverified");
+        SharedPreferences pref = getActivity().getSharedPreferences("MyPref", 0);
+
+        Call<List<RecordResponse>> call = api.getRecord(pref.getString("name","2001"),"unverified");
 
         call.enqueue(new Callback<List<RecordResponse>>() {
             @Override
