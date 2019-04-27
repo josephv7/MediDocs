@@ -122,7 +122,9 @@ public class VerifiedFragment extends Fragment {
         Api api = retrofit.create(Api.class);
 
 
-        Call<List<RecordResponse>> call = api.getRecord("2001","verified");
+
+        SharedPreferences pref = getActivity().getSharedPreferences("MyPref", 0);
+        Call<List<RecordResponse>> call = api.getRecord(pref.getString("name","2001"),"verified");
 
         call.enqueue(new Callback<List<RecordResponse>>() {
             @Override
