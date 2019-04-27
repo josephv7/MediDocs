@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -59,7 +60,7 @@ public class VerifiedAdapter extends RecyclerView.Adapter<VerifiedAdapter.MyView
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        Verified verified = verifiedList.get(position);
+        final Verified verified = verifiedList.get(position);
         str1 = "";
         str2 = "";
 
@@ -105,7 +106,9 @@ public class VerifiedAdapter extends RecyclerView.Adapter<VerifiedAdapter.MyView
         holder.bt2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 Intent viewIntent = new Intent(context,RecordView.class);
+                viewIntent.putExtra("value",str1);
                 context.startActivity(viewIntent);
             }
         });

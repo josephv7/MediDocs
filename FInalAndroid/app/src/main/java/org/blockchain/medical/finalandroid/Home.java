@@ -28,6 +28,7 @@ public class Home extends AppCompatActivity {
                 SharedPreferences.Editor editor = pref.edit();
                 editor.putBoolean("loggedin", false);
                 editor.remove("name");
+                editor.remove("contentkey");
                 editor.commit();
 
                 Intent loginIntent = new Intent(Home.this,Login.class);
