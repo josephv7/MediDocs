@@ -473,6 +473,7 @@ app.post('/api/test', function(req, res) {
 
 // API to create medical record
 app.post('/api/createRecord', function(req, res) {
+    console.log('create recoerd');
     var username = req.body.username;
     var content = req.body.content;
     var doctorname = req.body.doctorId;
@@ -846,19 +847,27 @@ app.get('/api/shareDoctor', async function(req, res) {
     app.get('/api/patientReadRecord', async function(req, res) {
         console.log('inside get method');
         console.log(req.query.recordHash);
-    
-        var recordHash = req.query.recordHash;
-    
-        var recordUrl = 'http://localhost:9090/ipfs/' + recordHash;
-        
-        fetch(recordUrl)
-    .then(res => res.text())
-    .then(body => console.log(body));
-        
-        
+
+        var dataString;
+
         res.header("Access-Control-Allow-Origin", "*");
             res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
             res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    
+        var recordHash = req.query.recordHash;
+    
+        var recordUrl = 'http://ipfs.io/ipfs/' + recordHash;
+        
+        fetch(recordUrl)
+    .then(res => res.text())
+    // .then(body => console.log(body))
+    .then(body => res.end(JSON.stringify([{ status: body }])));
+    // .then(res.end(JSON.stringify([{ status: body }])));
+
+
+    
+        
+        
         
         });
 
@@ -886,7 +895,7 @@ app.get('/api/shareDoctor', async function(req, res) {
                 jsonResponse = response.data;
         
             }).then(function (response){
-                res.send(JSON.stringify({contentKey :jsonResponse['contentKey']}));
+                res.send(JSON.stringify([{contentKey :jsonResponse['contentKey']}]));
                 // res.send(jsonResponse['contentKey']);
             }).catch(function (error) {
             console.log(error);
