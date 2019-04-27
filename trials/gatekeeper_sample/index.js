@@ -10,6 +10,18 @@ const cmd=require('node-cmd');
 const SHA256 = require("crypto-js/sha256");
 const CryptoJS = require("crypto-js");
 const IPFS = require('ipfs');
+const fetch = require('node-fetch');
+// const JSEncrypt = require('jsencrypt');
+const NodeRSA = require('node-rsa');
+const crypto = require("crypto");
+
+
+const config = require("./config");
+const accountSid = config.accountSid;
+const authToken = config.authToken;
+const client = require('twilio')(accountSid, authToken);
+
+
 
 let app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -353,7 +365,8 @@ app.get('/passwordCreation', async function(req, res) {
 
 
 
-// API for user login
+// API for user patinetKey
+// Store username as well as aesKey/contentKey in sharedpref....android
 app.post('/api/userLogin', function(req, res) {
     var username = req.body.username;
     var password = req.body.password;
@@ -460,6 +473,7 @@ app.post('/api/test', function(req, res) {
 
 // API to create medical record
 app.post('/api/createRecord', function(req, res) {
+    console.log('create recoerd');
     var username = req.body.username;
     var content = req.body.content;
     var doctorname = req.body.doctorId;
@@ -535,7 +549,7 @@ node.on('ready', async () => {
   
     const filesAdded = await node.add({
         path: timeStampString,
-      content: Buffer.from('Patient Record11 ' + CryptoJS.AES.encrypt(req.body.content,patientKey).toString())
+      content: Buffer.from(CryptoJS.AES.encrypt(req.body.content,patientKey).toString())
     })
   
     console.log('Added file:', filesAdded[0].path, filesAdded[0].hash)
@@ -561,6 +575,17 @@ node.on('ready', async () => {
             if(error) {
                 return console.dir(error);
             }
+
+
+            client.messages.create({
+          body: 'Record Created for patient' + username,
+          from: 'whatsapp:+14155238886',
+          to: 'whatsapp:+918289940688'
+        })
+        .then(message => console.log(message.sid))
+        .done();
+
+
             console.dir(JSON.parse(body));
         });
       } catch (error) {
@@ -735,6 +760,271 @@ app.get('/recordVerification', async function(req, res) {
 
 
 
+
+
+
+// API to return list of records shared with a doctor
+
+            app.get('/api/listDoctorRecords', async function(req, res) {
+                console.log('inside get method');
+                console.log(req.query.doctorId);
+                var doctorId = req.query.doctorId;
+                
+               
+                var doctorRecordString = 'http://localhost:3000/api/queries/ListRecordDoctor?id=' + doctorId;
+    
+                
+                
+                res.header("Access-Control-Allow-Origin", "*");
+                    res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
+                    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+                
+        
+        
+        
+                    axios.get(doctorRecordString).then(function (response){
+                        console.log(response.data);
+                        jsonResponse = response.data;
+                
+                    }).then(function (response){
+                        filterRecordData()
+                    }).catch(function (error) {
+                    console.log(error);
+                  });
+
+
+                  function filterRecordData(){
+                    for(var i = 0; i < jsonResponse.length; i++) {
+                        delete jsonResponse[i]['doctorId'];
+                    }
+            
+                    console.log(jsonResponse);
+                    res.send(jsonResponse);
+                  }
+            
+                });
+
+
+
+
+// API to share record with new doctor
+app.get('/api/shareDoctor', async function(req, res) {
+    console.log('inside get method');
+    console.log(req.query.recordid);
+    console.log(req.query.doctorid);
+
+    var recordid = req.query.recordid;
+    var doctorid = req.query.doctorid;
+
+    var recordString = 'org.example.basic.MedicalRecord#' + recordid;
+    
+    
+    Request.post({
+        "headers": { "content-type": "application/json" },
+        "url": "http://localhost:3000/api/ShareDoctor",
+        "body": JSON.stringify({
+            "asset": recordString,
+            "newDoctorId": [doctorid]
+        })
+    }, (error, response, body) => {
+        if(error) {
+            return console.dir(error);
+        }
+        console.dir(JSON.parse(body));
+    });
+    
+    res.header("Access-Control-Allow-Origin", "*");
+        res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
+        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    
+    });
+
+
+
+
+// API for patient to read his record 
+// Make sure to check username in sharedpref is same as record owner befor making this api call from the android side
+    app.get('/api/patientReadRecord', async function(req, res) {
+        console.log('inside get method');
+        console.log(req.query.recordHash);
+
+        var dataString;
+
+        res.header("Access-Control-Allow-Origin", "*");
+            res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
+            res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    
+        var recordHash = req.query.recordHash;
+    
+        var recordUrl = 'http://ipfs.io/ipfs/' + recordHash;
+        
+        fetch(recordUrl)
+    .then(res => res.text())
+    // .then(body => console.log(body))
+    .then(body => res.end(JSON.stringify([{ status: body }])));
+    // .then(res.end(JSON.stringify([{ status: body }])));
+
+
+    
+        
+        
+        
+        });
+
+
+
+
+
+
+
+
+// API to get patient aes key
+        app.get('/api/patientKey', async function(req, res) {
+            console.log('inside get method');
+            console.log(req.query.patientid);
+            // console.log(req.query.doctorid);
+        
+            var patientid = req.query.patientid;
+        
+            // var recordUrl = 'org.example.basic.MedicalRecord#' + recordid;
+            var patientUrl = 'http://localhost:3000/api/Patient/' + patientid;
+        
+            
+            axios.get(patientUrl).then(function (response){
+                console.log(response.data);
+                jsonResponse = response.data;
+        
+            }).then(function (response){
+                res.send(JSON.stringify([{contentKey :jsonResponse['contentKey']}]));
+                // res.send(jsonResponse['contentKey']);
+            }).catch(function (error) {
+            console.log(error);
+          });
+            
+        
+            
+            res.header("Access-Control-Allow-Origin", "*");
+                res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
+                res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+            
+            });
+    
+
+
+
+
+
+
+
+
+// API for doctor to get patient aes key encrypted with doctor public key
+            app.get('/api/encryptionKey', async function(req, res) {
+                console.log('inside get method');
+                console.log(req.query.patientid);
+                console.log(req.query.recordid);
+                console.log(req.query.doctorid);
+                // console.log(req.query.doctorid);
+
+                res.header("Access-Control-Allow-Origin", "*");
+                    res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
+                    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+                
+            
+            
+                var patientid = req.query.patientid;
+                var recordid = req.query.recordid;
+                var doctorid = req.query.doctorid;
+            
+                // var recordUrl = 'org.example.basic.MedicalRecord#' + recordid;
+                var patientUrl = 'http://localhost:3000/api/Patient/' + patientid;
+                var recordUrl = 'http://localhost:3000/api/MedicalRecord/' + recordid;
+                var doctorUrl = 'http://localhost:3000/api/Doctor/' + doctorid;
+
+
+                
+                
+                axios.get(patientUrl).then(function (response){
+                    console.log(response.data);
+                    keyResponse = response.data['contentKey'];
+            
+                }).then(function (response){
+                    // res.send(JSON.stringify({contentKey :jsonResponse['contentKey']}));
+                    // res.send(jsonResponse['contentKey']);
+                    getFileHash()
+                }).catch(function (error) {
+                console.log(error);
+              });
+
+
+              function getFileHash(){
+                axios.get(recordUrl).then(function (response){
+                    console.log(response.data);
+                    dataResponse = response.data['value'][0];
+            
+                }).then(function (response){
+                    // res.send(JSON.stringify({key : keyResponse, data : dataResponse}));
+                    // res.send(jsonResponse['contentKey']);
+                    getDoctorKey()
+                    
+                }).catch(function (error) {
+                console.log(error);
+              });
+
+              }
+                
+            
+            function getDoctorKey(){
+
+                axios.get(doctorUrl).then(function (response){
+                    console.log(response.data);
+                    doctorResponse = response.data['publicKey'];
+                    doctorResp = response.data['privateKey'];
+            
+                }).then(function (response){
+                    // res.send(JSON.stringify({key : keyResponse, data : dataResponse, publicKey : doctorResponse}));
+                    console.log('doctor ' + doctorResponse);
+                    encryptKey()
+                }).catch(function (error) {
+                console.log(error);
+              });
+
+
+            }
+
+
+
+            function encryptKey(){
+
+                var message = 'abcd';
+                console.log('xxxxxxx' + doctorResponse.substring(0, doctorResponse.length - 1));
+                var encrypted = crypto.publicEncrypt(doctorResponse.substring(0, doctorResponse.length - 1),Buffer.from(message));
+
+                console.log(encrypted.toString("base64"));
+
+                // const key = new NodeRSA(doctorResponse.substring(0, doctorResponse.length - 1))
+                // key.importKey(keyData, 'pkcs8');
+
+
+                var decrypted = crypto.privateDecrypt(doctorResp.substring(0, doctorResp.length - 1),Buffer.from(encrypted));
+
+                console.log('-----');
+                console.log(decrypted.toString("utf8"));
+
+                // console.log('key' + key.getKeySize());
+
+                // console.log(key.encrypt('abc').toString());
+
+
+            }
+                
+                
+                });
+
+
+
+
+
+    
 
 
   let server = app.listen(5001, function() {
