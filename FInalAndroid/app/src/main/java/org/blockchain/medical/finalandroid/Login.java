@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -28,6 +29,7 @@ public class Login extends AppCompatActivity {
     EditText password;
     Button login;
     String loginStatus;
+    String contentKey;
     ProgressBar pd;
     String generatedHash;
 
@@ -72,6 +74,8 @@ public class Login extends AppCompatActivity {
                         .hashString(password.getText().toString(),Charset.forName("UTF-8"))
                         .toString();
 
+        Log.d("generatedhash",generatedHash);
+
         Call<List<LoginStatus>> call = api.postLogin(name.getText().toString(),generatedHash,"patient");
 
         call.enqueue(new Callback<List<LoginStatus>>() {
@@ -84,18 +88,19 @@ public class Login extends AppCompatActivity {
                 if (loginStatus.equalsIgnoreCase("ok")){
                     Toast.makeText(Login.this, "Success", Toast.LENGTH_SHORT).show();
 
-                    SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
-                    SharedPreferences.Editor editor = pref.edit();
-                    editor.putBoolean("loggedin", true);
-                    editor.putString("name",name.getText().toString());
-                    editor.commit();
 
-                    Intent homeIntent = new Intent(Login.this,Home.class);
-                    startActivity(homeIntent);
-                    finish();
+                    contentKey();
+
+
+
+
 
                 }else if(loginStatus.equalsIgnoreCase("incorrect")){
                     Toast.makeText(Login.this, "Incorrect Password", Toast.LENGTH_SHORT).show();
+
+                    pd.setVisibility(View.INVISIBLE);
+                    login.setVisibility(View.VISIBLE);
+
                 }else if(loginStatus.equalsIgnoreCase("error")){
                     Toast.makeText(Login.this, "Server Error", Toast.LENGTH_SHORT).show();
 
@@ -119,4 +124,56 @@ public class Login extends AppCompatActivity {
 
 
     }
+
+    void contentKey(){
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Api.BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create()) //Here we are using the GsonConverterFactory to directly convert json data to object
+                .build();
+
+        Api api = retrofit.create(Api.class);
+
+
+        Call<List<ContentResponse>> call = api.contentKey(name.getText().toString());
+
+        call.enqueue(new Callback<List<ContentResponse>>() {
+            @Override
+            public void onResponse(Call<List<ContentResponse>> call, Response<List<ContentResponse>> response) {
+
+                List<ContentResponse> docs = response.body();
+
+                contentKey = docs.get(0).contentKey;
+
+                Log.d("contenKey",contentKey);
+
+                SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
+                SharedPreferences.Editor editor = pref.edit();
+                editor.putString("contentkey",contentKey);
+                editor.putBoolean("loggedin", true);
+                editor.putString("name",name.getText().toString());
+                editor.commit();
+
+
+
+                Intent homeIntent = new Intent(Login.this,Home.class);
+                startActivity(homeIntent);
+                finish();
+
+
+            }
+
+            @Override
+            public void onFailure(Call<List<ContentResponse>> call, Throwable t) {
+
+                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+
+
+
+    }
+
 }
