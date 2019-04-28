@@ -318,6 +318,7 @@ app.get('/passwordCreation', async function(req, res) {
         for(var i = 0; i < jsonResponse.length; i++) {
             delete jsonResponse[i]['password'];
             delete jsonResponse[i]['privateKey'];
+            delete jsonResponse[i]['publicKey'];
         }
 
         console.log(jsonResponse);
@@ -437,6 +438,12 @@ app.post('/api/userLogin', function(req, res) {
 
 app.get('/test', async function(req, res) {
     console.log('inside get method');
+
+
+
+    res.header("Access-Control-Allow-Origin", "*");
+        res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
+        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     
     
     Request.post({
@@ -451,11 +458,9 @@ app.get('/test', async function(req, res) {
             return console.dir(error);
         }
         console.dir(JSON.parse(body));
+        res.end(JSON.stringify([{ status: "ok" }]));
     });
     
-    res.header("Access-Control-Allow-Origin", "*");
-        res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
-        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     
     });
 
@@ -826,16 +831,17 @@ app.get('/api/shareDoctor', async function(req, res) {
     
     Request.post({
         "headers": { "content-type": "application/json" },
-        "url": "http://localhost:3000/api/ShareDoctor",
+        "url": "http://localhost:3000/api/UpdateDoctor",
         "body": JSON.stringify({
             "asset": recordString,
-            "newDoctorId": [doctorid]
+            "newDoctorId": doctorid.split('.')
         })
     }, (error, response, body) => {
         if(error) {
             return console.dir(error);
         }
         console.dir(JSON.parse(body));
+        
     });
     
     res.header("Access-Control-Allow-Origin", "*");
