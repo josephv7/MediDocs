@@ -14,6 +14,7 @@ const fetch = require('node-fetch');
 // const JSEncrypt = require('jsencrypt');
 const NodeRSA = require('node-rsa');
 const crypto = require("crypto");
+const cors = require('cors')
 
 
 const config = require("./config");
@@ -26,6 +27,7 @@ const client = require('twilio')(accountSid, authToken);
 let app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(cors());
 
 // API to create new hospital
 
@@ -424,8 +426,8 @@ app.post('/api/userLogin', function(req, res) {
 
   }
 
-    console.log(password);
-    console.log(username);
+    // console.log(password);
+    // console.log(username);
 
 
 });
@@ -654,6 +656,7 @@ app.get('/recordVerification', async function(req, res) {
             return console.dir(error);
         }
         console.dir(JSON.parse(body));
+        res.end(JSON.stringify([{ status: "ok" }]));
     });
   }
     
@@ -662,6 +665,8 @@ app.get('/recordVerification', async function(req, res) {
     res.header("Access-Control-Allow-Origin", "*");
         res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
         res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+
+
     
     });
 
@@ -1023,8 +1028,6 @@ app.get('/api/shareDoctor', async function(req, res) {
 
 
 
-
-    
 
 
   let server = app.listen(5001, function() {
