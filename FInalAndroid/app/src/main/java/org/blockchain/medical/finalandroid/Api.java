@@ -12,7 +12,7 @@ import retrofit2.http.Query;
 
 public interface Api
 {
-    String BASE_URL = "https://88a7963c.ngrok.io";
+    String BASE_URL = "https://be24f8ea.ngrok.io";
 
     @POST("/api/userLogin")
     @FormUrlEncoded
