@@ -11,10 +11,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class VerifiedAdapter extends RecyclerView.Adapter<VerifiedAdapter.MyViewHolder> {
 
@@ -23,6 +31,9 @@ public class VerifiedAdapter extends RecyclerView.Adapter<VerifiedAdapter.MyView
     String[] splitval,splitdoc;
     Context context;
     ArrayList selectedItems;
+    String status;
+
+    ProgressBar pd;
 
 
 
@@ -39,6 +50,7 @@ public class VerifiedAdapter extends RecyclerView.Adapter<VerifiedAdapter.MyView
             doctorId = (TextView) view.findViewById(R.id.doctorId);
             bt1 = view.findViewById(R.id.bt1);
             bt2 = view.findViewById(R.id.bt2);
+            pd = view.findViewById(R.id.pd);
 
         }
     }
@@ -176,13 +188,66 @@ public class VerifiedAdapter extends RecyclerView.Adapter<VerifiedAdapter.MyView
                         public void onClick(DialogInterface dialog, int which) {
                             switch (which){
                                 case DialogInterface.BUTTON_POSITIVE:
-                                    //Yes button clicked
+                                    pd.setVisibility(View.VISIBLE);
+                                    getVerified();
                                     break;
 
                                 case DialogInterface.BUTTON_NEGATIVE:
                                     //No button clicked
                                     break;
                             }
+                        }
+
+                        private void getVerified() {
+
+                            Retrofit retrofit = new Retrofit.Builder()
+                                    .baseUrl(Api.BASE_URL)
+                                    .addConverterFactory(GsonConverterFactory.create()) //Here we are using the GsonConverterFactory to directly convert json data to object
+                                    .build();
+
+                            Api api = retrofit.create(Api.class);
+
+                            String username;
+
+
+                            SharedPreferences pref = context.getSharedPreferences("MyPref", 0);
+                            username = pref.getString("name","2001");
+
+
+                            Call<List<VerificationResponse>> call = api.getVerified(verified.getRecordId(),username);
+
+                            call.enqueue(new Callback<List<VerificationResponse>>() {
+                                @Override
+                                public void onResponse(Call<List<VerificationResponse>> call, Response<List<VerificationResponse>> response) {
+
+                                    pd.setVisibility(View.INVISIBLE);
+
+                                    List<VerificationResponse> docs = response.body();
+
+                                    status = docs.get(0).status;
+
+
+                                    if (status.equals("ok")){
+
+                                        Toast.makeText(context, "Verified", Toast.LENGTH_SHORT).show();
+
+                                    }
+
+
+                                }
+
+                                @Override
+                                public void onFailure(Call<List<VerificationResponse>> call, Throwable t) {
+
+                                    Toast.makeText(context, t.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            });
+
+
+
+
+
+
                         }
                     };
 
@@ -194,7 +259,9 @@ public class VerifiedAdapter extends RecyclerView.Adapter<VerifiedAdapter.MyView
 
 
 
+
     }
+
 
     @Override
     public int getItemCount() {

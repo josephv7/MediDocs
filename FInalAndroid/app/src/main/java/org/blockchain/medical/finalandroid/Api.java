@@ -28,4 +28,7 @@ public interface Api
 
     @GET("/api/patientReadRecord")
     Call<List<ViewResponse>> viewRecord(@Query(value = "recordHash",encoded = true) String recordHash );
+
+    @GET("/recordVerification")
+    Call<List<VerificationResponse>>  getVerified(@Query(value = "recordid",encoded = true) String recordid , @Query(value = "username" , encoded = true) String username);
 }
