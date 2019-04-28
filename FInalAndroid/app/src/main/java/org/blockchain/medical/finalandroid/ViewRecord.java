@@ -13,6 +13,7 @@ public class ViewRecord extends AppCompatActivity {
 
     FragmentPagerAdapter adapterViewPager;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,6 +23,7 @@ public class ViewRecord extends AppCompatActivity {
         ViewPager vpPager = (ViewPager) findViewById(R.id.vpPager);
         adapterViewPager = new MyPagerAdapter(getSupportFragmentManager());
         vpPager.setAdapter(adapterViewPager);
+
 
     }
 
@@ -45,7 +47,7 @@ public class ViewRecord extends AppCompatActivity {
                 case 0: // Fragment # 0 - This will show FirstFragment
                     return VerifiedFragment.newInstance(1, "VERIFIED RECORD");
                 case 1: // Fragment # 1 - This will show SecondFragment
-                    return UnverifiedFragment.newInstance(2, "UNVERIFIED RECORD");
+                    return VerifiedFragment.newInstance(2, "UNVERIFIED RECORD");
                 default:
                     return null;
             }
