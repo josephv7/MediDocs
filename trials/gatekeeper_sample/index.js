@@ -478,7 +478,8 @@ app.post('/api/test', function(req, res) {
 
 // API to create medical record
 app.post('/api/createRecord', function(req, res) {
-    console.log('API Call to create new record');    var username = req.body.username;
+    console.log('API Call to create new record');    
+    var username = req.body.username;
     var content = req.body.content;
     var doctorname = req.body.doctorId;
 
@@ -945,7 +946,10 @@ app.get('/api/shareDoctor', async function(req, res) {
                 var doctorUrl = 'http://localhost:3000/api/Doctor/' + doctorid;
 
 
-                
+                var dataResponse;
+                var keyResponse;
+                var doctorResponse;
+                var doctorResp;
                 
                 axios.get(patientUrl).then(function (response){
                     console.log(response.data);
@@ -1001,7 +1005,7 @@ app.get('/api/shareDoctor', async function(req, res) {
 
                 var message = 'abcd';
                 console.log('xxxxxxx' + doctorResponse.substring(0, doctorResponse.length - 1));
-                var encrypted = crypto.publicEncrypt(doctorResponse.substring(0, doctorResponse.length - 1),Buffer.from(message));
+                var encrypted = crypto.publicEncrypt(doctorResponse.substring(0, doctorResponse.length - 1),Buffer.from(keyResponse));
 
                 console.log(encrypted.toString("base64"));
 
@@ -1017,6 +1021,8 @@ app.get('/api/shareDoctor', async function(req, res) {
                 // console.log('key' + key.getKeySize());
 
                 // console.log(key.encrypt('abc').toString());
+
+                res.end(JSON.stringify({ encryptedKey: encrypted, fileHash: dataResponse}));
 
 
             }
@@ -1060,6 +1066,39 @@ app.get('/api/hospitaldoctorCount', async function(req, res) {
 });
 
 
+
+
+
+
+
+
+
+// API to get doctor private key after login
+app.get('/api/doctorPrivateKey', async function(req, res) {
+    console.log('inside get method');
+    var doctorid = req.query.doctorid;
+
+    var doctorResponse;
+
+    var doctorUrl = 'http://localhost:3000/api/Doctor/' + doctorid;
+
+    res.header("Access-Control-Allow-Origin", "*");
+        res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
+        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    
+
+        axios.get(doctorUrl).then(function (response){
+            console.log(response.data);
+            doctorResponse = response.data['privateKey'];
+    
+        }).then(function (response){
+            res.end(JSON.stringify({data : doctorResponse.substring(0, doctorResponse.length - 1)}));
+        }).catch(function (error) {
+        console.log(error);
+      });
+
+
+});
 
 
 
