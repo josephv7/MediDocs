@@ -30,9 +30,8 @@ app.use(bodyParser.json());
 app.use(cors());
 
 // API to create new hospital
-
 app.get('/createHospital', async function(req, res) {
-    console.log('API Call to create new patient');
+    console.log('API Call to create new hospital');
     console.log(req.query.hospitalName);
     console.log(req.query.password);
 
@@ -171,7 +170,7 @@ app.get('/createPatient', async function(req, res) {
 
 // API Call to create new doctor
 app.get('/createDoctor', async function(req, res) {
-    console.log('API Call to create new patient');
+    console.log('API Call to create new doctor');
     console.log(req.query.firstName);
     console.log(req.query.lastName);
     console.log(req.query.password);
@@ -293,8 +292,7 @@ app.get('/passwordCreation', async function(req, res) {
 // For patient, hospital, and regulator
 // API to list doctors after removing private data
     app.get('/api/listDoctors', async function(req, res) {
-        console.log('inside get method');
-
+        console.log('API Call to list all doctors');
 
 
         res.header("Access-Control-Allow-Origin", "*");
@@ -331,8 +329,7 @@ app.get('/passwordCreation', async function(req, res) {
 // For regulators
 // API to list hospitals after removing private data
         app.get('/api/listHospitals', async function(req, res) {
-            console.log('inside get method');
-    
+            console.log('API Call to list all hospitals');    
     
     
             res.header("Access-Control-Allow-Origin", "*");
@@ -371,6 +368,7 @@ app.get('/passwordCreation', async function(req, res) {
 // API for user patinetKey
 // Store username as well as aesKey/contentKey in sharedpref....android
 app.post('/api/userLogin', function(req, res) {
+    console.log('API Call to user authentication');
     var username = req.body.username;
     var password = req.body.password;
     var type = req.body.type;
@@ -480,8 +478,7 @@ app.post('/api/test', function(req, res) {
 
 // API to create medical record
 app.post('/api/createRecord', function(req, res) {
-    console.log('create recoerd');
-    var username = req.body.username;
+    console.log('API Call to create new record');    var username = req.body.username;
     var content = req.body.content;
     var doctorname = req.body.doctorId;
 
@@ -618,8 +615,7 @@ node.on('ready', async () => {
 
 
 app.get('/recordVerification', async function(req, res) {
-    console.log('inside get method');
-    console.log(req.query.recordid);
+    console.log('API Call to verify a patient record');    console.log(req.query.recordid);
     console.log(req.query.username);
 
     var username = req.query.username;
@@ -678,10 +674,9 @@ app.get('/recordVerification', async function(req, res) {
 
 
 
-
+// API to list all doctors in a hospital
     app.get('/api/hospitalDoctorList', async function(req, res) {
-        console.log('inside get method');
-        console.log(req.query.hospitalid);
+        console.log('API Call to list all doctors in a hospital');        console.log(req.query.hospitalid);
         var hospitalid = req.query.hospitalid;
 
         var hospitalDoctorString = 'http://localhost:3000/api/queries/HospitalDoctorList?id=resource%3Aorg.example.basic.Hospital%23' + hospitalid;
@@ -726,9 +721,9 @@ app.get('/recordVerification', async function(req, res) {
 
 
 
-
+// API call to list all patient records
         app.get('/api/listPatientRecords', async function(req, res) {
-            console.log('inside get method');
+            console.log('API Call to list all patient records');
             console.log(req.query.patientId);
             var patientId = req.query.patientId;
             var listType = req.query.listType;
@@ -776,7 +771,7 @@ app.get('/recordVerification', async function(req, res) {
 // API to return list of records shared with a doctor
 
             app.get('/api/listDoctorRecords', async function(req, res) {
-                console.log('inside get method');
+                console.log('API call to list all records which are shared with a specific doctor');
                 console.log(req.query.doctorId);
                 var doctorId = req.query.doctorId;
                 
@@ -817,9 +812,9 @@ app.get('/recordVerification', async function(req, res) {
 
 
 
-// API to share record with new doctor
+// API to share record with new doctor, passing new list from android app
 app.get('/api/shareDoctor', async function(req, res) {
-    console.log('inside get method');
+    console.log('API call to share record with doctor');
     console.log(req.query.recordid);
     console.log(req.query.doctorid);
 
@@ -856,7 +851,7 @@ app.get('/api/shareDoctor', async function(req, res) {
 // API for patient to read his record 
 // Make sure to check username in sharedpref is same as record owner befor making this api call from the android side
     app.get('/api/patientReadRecord', async function(req, res) {
-        console.log('inside get method');
+        console.log('Patient read record api call');
         console.log(req.query.recordHash);
 
         var dataString;
@@ -875,12 +870,7 @@ app.get('/api/shareDoctor', async function(req, res) {
     .then(body => res.end(JSON.stringify([{ status: body }])));
     // .then(res.end(JSON.stringify([{ status: body }])));
 
-
-    
-        
-        
-        
-        });
+});
 
 
 
@@ -891,7 +881,7 @@ app.get('/api/shareDoctor', async function(req, res) {
 
 // API to get patient aes key
         app.get('/api/patientKey', async function(req, res) {
-            console.log('inside get method');
+            console.log('API call to fetch patient aes key');
             console.log(req.query.patientid);
             // console.log(req.query.doctorid);
         
@@ -930,7 +920,7 @@ app.get('/api/shareDoctor', async function(req, res) {
 
 // API for doctor to get patient aes key encrypted with doctor public key
             app.get('/api/encryptionKey', async function(req, res) {
-                console.log('inside get method');
+                console.log('API call for patinet key encryption');
                 console.log(req.query.patientid);
                 console.log(req.query.recordid);
                 console.log(req.query.doctorid);
