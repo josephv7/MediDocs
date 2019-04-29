@@ -14,6 +14,7 @@ const fetch = require('node-fetch');
 // const JSEncrypt = require('jsencrypt');
 const NodeRSA = require('node-rsa');
 const crypto = require("crypto");
+const cors = require('cors')
 
 
 const config = require("./config");
@@ -26,11 +27,11 @@ const client = require('twilio')(accountSid, authToken);
 let app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(cors());
 
 // API to create new hospital
-
 app.get('/createHospital', async function(req, res) {
-    console.log('API Call to create new patient');
+    console.log('API Call to create new hospital');
     console.log(req.query.hospitalName);
     console.log(req.query.password);
 
@@ -169,7 +170,7 @@ app.get('/createPatient', async function(req, res) {
 
 // API Call to create new doctor
 app.get('/createDoctor', async function(req, res) {
-    console.log('API Call to create new patient');
+    console.log('API Call to create new doctor');
     console.log(req.query.firstName);
     console.log(req.query.lastName);
     console.log(req.query.password);
@@ -291,8 +292,7 @@ app.get('/passwordCreation', async function(req, res) {
 // For patient, hospital, and regulator
 // API to list doctors after removing private data
     app.get('/api/listDoctors', async function(req, res) {
-        console.log('inside get method');
-
+        console.log('API Call to list all doctors');
 
 
         res.header("Access-Control-Allow-Origin", "*");
@@ -316,6 +316,7 @@ app.get('/passwordCreation', async function(req, res) {
         for(var i = 0; i < jsonResponse.length; i++) {
             delete jsonResponse[i]['password'];
             delete jsonResponse[i]['privateKey'];
+            delete jsonResponse[i]['publicKey'];
         }
 
         console.log(jsonResponse);
@@ -328,8 +329,7 @@ app.get('/passwordCreation', async function(req, res) {
 // For regulators
 // API to list hospitals after removing private data
         app.get('/api/listHospitals', async function(req, res) {
-            console.log('inside get method');
-    
+            console.log('API Call to list all hospitals');    
     
     
             res.header("Access-Control-Allow-Origin", "*");
@@ -368,6 +368,8 @@ app.get('/passwordCreation', async function(req, res) {
 // API for user patinetKey
 // Store username as well as aesKey/contentKey in sharedpref....android
 app.post('/api/userLogin', function(req, res) {
+    console.log('API Call to user authentication');
+    console.log('----' + req.body.password);
     var username = req.body.username;
     var password = req.body.password;
     var type = req.body.type;
@@ -395,7 +397,7 @@ app.post('/api/userLogin', function(req, res) {
 
 
     axios.get(url).then(function (response){
-        console.log(response.data);
+        // console.log(response.data);
         jsonResponse = response.data;
         
 
@@ -410,7 +412,7 @@ app.post('/api/userLogin', function(req, res) {
 
 
   function checkPassword(response){
-      console.log(response);
+    //   console.log(response);
       console.log(response.password);
       console.log('inside check');
 
@@ -424,8 +426,8 @@ app.post('/api/userLogin', function(req, res) {
 
   }
 
-    console.log(password);
-    console.log(username);
+    // console.log(password);
+    // console.log(username);
 
 
 });
@@ -435,6 +437,12 @@ app.post('/api/userLogin', function(req, res) {
 
 app.get('/test', async function(req, res) {
     console.log('inside get method');
+
+
+
+    res.header("Access-Control-Allow-Origin", "*");
+        res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
+        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     
     
     Request.post({
@@ -449,11 +457,9 @@ app.get('/test', async function(req, res) {
             return console.dir(error);
         }
         console.dir(JSON.parse(body));
+        res.end(JSON.stringify([{ status: "ok" }]));
     });
     
-    res.header("Access-Control-Allow-Origin", "*");
-        res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
-        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     
     });
 
@@ -473,7 +479,7 @@ app.post('/api/test', function(req, res) {
 
 // API to create medical record
 app.post('/api/createRecord', function(req, res) {
-    console.log('create recoerd');
+    console.log('API Call to create new record');    
     var username = req.body.username;
     var content = req.body.content;
     var doctorname = req.body.doctorId;
@@ -611,8 +617,7 @@ node.on('ready', async () => {
 
 
 app.get('/recordVerification', async function(req, res) {
-    console.log('inside get method');
-    console.log(req.query.recordid);
+    console.log('API Call to verify a patient record');    console.log(req.query.recordid);
     console.log(req.query.username);
 
     var username = req.query.username;
@@ -654,6 +659,7 @@ app.get('/recordVerification', async function(req, res) {
             return console.dir(error);
         }
         console.dir(JSON.parse(body));
+        res.end(JSON.stringify([{ status: "ok" }]));
     });
   }
     
@@ -662,16 +668,17 @@ app.get('/recordVerification', async function(req, res) {
     res.header("Access-Control-Allow-Origin", "*");
         res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
         res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+
+
     
     });
 
 
 
 
-
+// API to list all doctors in a hospital
     app.get('/api/hospitalDoctorList', async function(req, res) {
-        console.log('inside get method');
-        console.log(req.query.hospitalid);
+        console.log('API Call to list all doctors in a hospital');        console.log(req.query.hospitalid);
         var hospitalid = req.query.hospitalid;
 
         var hospitalDoctorString = 'http://localhost:3000/api/queries/HospitalDoctorList?id=resource%3Aorg.example.basic.Hospital%23' + hospitalid;
@@ -716,9 +723,9 @@ app.get('/recordVerification', async function(req, res) {
 
 
 
-
+// API call to list all patient records
         app.get('/api/listPatientRecords', async function(req, res) {
-            console.log('inside get method');
+            console.log('API Call to list all patient records');
             console.log(req.query.patientId);
             var patientId = req.query.patientId;
             var listType = req.query.listType;
@@ -766,7 +773,7 @@ app.get('/recordVerification', async function(req, res) {
 // API to return list of records shared with a doctor
 
             app.get('/api/listDoctorRecords', async function(req, res) {
-                console.log('inside get method');
+                console.log('API call to list all records which are shared with a specific doctor');
                 console.log(req.query.doctorId);
                 var doctorId = req.query.doctorId;
                 
@@ -807,9 +814,9 @@ app.get('/recordVerification', async function(req, res) {
 
 
 
-// API to share record with new doctor
+// API to share record with new doctor, passing new list from android app
 app.get('/api/shareDoctor', async function(req, res) {
-    console.log('inside get method');
+    console.log('API call to share record with doctor');
     console.log(req.query.recordid);
     console.log(req.query.doctorid);
 
@@ -817,25 +824,29 @@ app.get('/api/shareDoctor', async function(req, res) {
     var doctorid = req.query.doctorid;
 
     var recordString = 'org.example.basic.MedicalRecord#' + recordid;
+
+    res.header("Access-Control-Allow-Origin", "*");
+        res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
+        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    
     
     
     Request.post({
         "headers": { "content-type": "application/json" },
-        "url": "http://localhost:3000/api/ShareDoctor",
+        "url": "http://localhost:3000/api/UpdateDoctor",
         "body": JSON.stringify({
             "asset": recordString,
-            "newDoctorId": [doctorid]
+            "newDoctorId": doctorid.split('.')
         })
     }, (error, response, body) => {
         if(error) {
             return console.dir(error);
         }
         console.dir(JSON.parse(body));
+        res.end(JSON.stringify([{ status: "ok" }]));
+        
     });
     
-    res.header("Access-Control-Allow-Origin", "*");
-        res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
-        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     
     });
 
@@ -845,7 +856,7 @@ app.get('/api/shareDoctor', async function(req, res) {
 // API for patient to read his record 
 // Make sure to check username in sharedpref is same as record owner befor making this api call from the android side
     app.get('/api/patientReadRecord', async function(req, res) {
-        console.log('inside get method');
+        console.log('Patient read record api call');
         console.log(req.query.recordHash);
 
         var dataString;
@@ -864,12 +875,7 @@ app.get('/api/shareDoctor', async function(req, res) {
     .then(body => res.end(JSON.stringify([{ status: body }])));
     // .then(res.end(JSON.stringify([{ status: body }])));
 
-
-    
-        
-        
-        
-        });
+});
 
 
 
@@ -880,7 +886,7 @@ app.get('/api/shareDoctor', async function(req, res) {
 
 // API to get patient aes key
         app.get('/api/patientKey', async function(req, res) {
-            console.log('inside get method');
+            console.log('API call to fetch patient aes key');
             console.log(req.query.patientid);
             // console.log(req.query.doctorid);
         
@@ -895,7 +901,7 @@ app.get('/api/shareDoctor', async function(req, res) {
                 jsonResponse = response.data;
         
             }).then(function (response){
-                res.send(JSON.stringify([{contentKey :jsonResponse['contentKey']}]));
+                res.send(JSON.stringify([{contentKey :jsonResponse['contentKey'], patientName : jsonResponse['firstName'] + ' ' + jsonResponse['lastName']}]));
                 // res.send(jsonResponse['contentKey']);
             }).catch(function (error) {
             console.log(error);
@@ -919,7 +925,7 @@ app.get('/api/shareDoctor', async function(req, res) {
 
 // API for doctor to get patient aes key encrypted with doctor public key
             app.get('/api/encryptionKey', async function(req, res) {
-                console.log('inside get method');
+                console.log('API call for patinet key encryption');
                 console.log(req.query.patientid);
                 console.log(req.query.recordid);
                 console.log(req.query.doctorid);
@@ -941,7 +947,10 @@ app.get('/api/shareDoctor', async function(req, res) {
                 var doctorUrl = 'http://localhost:3000/api/Doctor/' + doctorid;
 
 
-                
+                var dataResponse;
+                var keyResponse;
+                var doctorResponse;
+                var doctorResp;
                 
                 axios.get(patientUrl).then(function (response){
                     console.log(response.data);
@@ -997,9 +1006,9 @@ app.get('/api/shareDoctor', async function(req, res) {
 
                 var message = 'abcd';
                 console.log('xxxxxxx' + doctorResponse.substring(0, doctorResponse.length - 1));
-                var encrypted = crypto.publicEncrypt(doctorResponse.substring(0, doctorResponse.length - 1),Buffer.from(message));
+                var encrypted = crypto.publicEncrypt(doctorResponse.substring(0, doctorResponse.length - 1),Buffer.from(keyResponse));
 
-                console.log(encrypted.toString("base64"));
+                console.log(encrypted.toString("base64") + 'bbbbbbbbb');
 
                 // const key = new NodeRSA(doctorResponse.substring(0, doctorResponse.length - 1))
                 // key.importKey(keyData, 'pkcs8');
@@ -1014,17 +1023,127 @@ app.get('/api/shareDoctor', async function(req, res) {
 
                 // console.log(key.encrypt('abc').toString());
 
+                res.end(JSON.stringify({ encryptedKey: encrypted.toString("base64"), fileHash: dataResponse}));
+
 
             }
                 
                 
-                });
+    });
 
 
 
 
 
+
+
+
+// API to list hospital doctor count
+app.get('/api/hospitaldoctorCount', async function(req, res) {
+    console.log('inside get method');
+    var hospitalid = req.query.hospitalid;
+
+
+
+    res.header("Access-Control-Allow-Origin", "*");
+        res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
+        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     
+
+        var hospitalDoctorString = 'http://localhost:3000/api/queries/HospitalDoctorList?id=resource%3Aorg.example.basic.Hospital%23' + hospitalid;
+        
+
+
+        axios.get(hospitalDoctorString).then(function (response){
+        console.log(response.data);
+        jsonResponse = response.data;
+ }).then(function (response){
+    res.end(JSON.stringify({ count: jsonResponse.length}));
+    }).catch(function (error) {
+    console.log(error);
+  });
+
+
+});
+
+
+
+
+// API to get doctor private key after login
+app.get('/api/doctorPrivateKey', async function(req, res) {
+    console.log('inside get method');
+    var doctorid = req.query.doctorid;
+
+    var doctorResponse;
+
+    var doctorUrl = 'http://localhost:3000/api/Doctor/' + doctorid;
+
+    res.header("Access-Control-Allow-Origin", "*");
+        res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
+        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    
+
+        axios.get(doctorUrl).then(function (response){
+            console.log(response.data);
+            doctorResponse = response.data['privateKey'];
+    
+        }).then(function (response){
+            res.end(doctorResponse.substring(0, doctorResponse.length - 1));
+            // res.end(JSON.stringify({data : doctorResponse.substring(0, doctorResponse.length - 1)}));
+        }).catch(function (error) {
+        console.log(error);
+      });
+
+
+});
+
+
+
+
+
+
+
+// API to list no of patient records
+app.get('/api/patientRecordCount', async function(req, res) {
+    console.log('inside get method');
+    var patientid = req.query.patientid;
+    var type = req.query.type;
+
+
+
+    res.header("Access-Control-Allow-Origin", "*");
+        res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
+        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    
+
+        var patientRecordString;
+
+            if(type == 'verified'){
+                patientRecordString = 'http://localhost:3000/api/queries/VerifiedPatientRecords?id=resource%3Aorg.example.basic.Patient%23' + patientid;
+            }else if(type == 'unverified'){
+                patientRecordString = 'http://localhost:3000/api/queries/UnVerifiedPatientRecords?id=resource%3Aorg.example.basic.Patient%23' + patientid;
+            }else if(type == 'all'){
+                patientRecordString = 'http://localhost:3000/api/queries/ListByPatient?id=resource%3Aorg.example.basic.Patient%23' + patientid;
+
+            }
+
+
+        axios.get(patientRecordString).then(function (response){
+        console.log(response.data);
+        jsonResponse = response.data;
+ }).then(function (response){
+    res.end(JSON.stringify([{ count: jsonResponse.length}]));
+    }).catch(function (error) {
+    console.log(error);
+  });
+
+
+});
+
+
+
+
+
 
 
   let server = app.listen(5001, function() {
