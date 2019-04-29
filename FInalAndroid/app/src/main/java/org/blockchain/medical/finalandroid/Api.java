@@ -12,7 +12,7 @@ import retrofit2.http.Query;
 
 public interface Api
 {
-    String BASE_URL = "https://be24f8ea.ngrok.io";
+    String BASE_URL = "https://11056209.ngrok.io";
 
     @POST("/api/userLogin")
     @FormUrlEncoded
@@ -31,4 +31,10 @@ public interface Api
 
     @GET("/recordVerification")
     Call<List<VerificationResponse>>  getVerified(@Query(value = "recordid",encoded = true) String recordid , @Query(value = "username" , encoded = true) String username);
+
+    @GET("/api/listDoctors")
+    Call<List<DoctorResponse>> getDoctors();
+
+    @GET("/api/shareDoctor")
+    Call<List<ShareDoctorResponse>> setDoctor(@Query(value = "recordid", encoded = true) String recordid , @Query(value = "doctorid",encoded = true) String doctorid);
 }
