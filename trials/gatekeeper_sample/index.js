@@ -1008,7 +1008,7 @@ app.get('/api/shareDoctor', async function(req, res) {
                 console.log('xxxxxxx' + doctorResponse.substring(0, doctorResponse.length - 1));
                 var encrypted = crypto.publicEncrypt(doctorResponse.substring(0, doctorResponse.length - 1),Buffer.from(keyResponse));
 
-                console.log(encrypted.toString("base64"));
+                console.log(encrypted.toString("base64") + 'bbbbbbbbb');
 
                 // const key = new NodeRSA(doctorResponse.substring(0, doctorResponse.length - 1))
                 // key.importKey(keyData, 'pkcs8');
@@ -1023,7 +1023,7 @@ app.get('/api/shareDoctor', async function(req, res) {
 
                 // console.log(key.encrypt('abc').toString());
 
-                res.end(JSON.stringify({ encryptedKey: encrypted, fileHash: dataResponse}));
+                res.end(JSON.stringify({ encryptedKey: encrypted.toString("base64"), fileHash: dataResponse}));
 
 
             }
@@ -1069,11 +1069,6 @@ app.get('/api/hospitaldoctorCount', async function(req, res) {
 
 
 
-
-
-
-
-
 // API to get doctor private key after login
 app.get('/api/doctorPrivateKey', async function(req, res) {
     console.log('inside get method');
@@ -1101,6 +1096,50 @@ app.get('/api/doctorPrivateKey', async function(req, res) {
 
 
 });
+
+
+
+
+
+
+
+// API to list no of patient records
+app.get('/api/patientRecordCount', async function(req, res) {
+    console.log('inside get method');
+    var patientid = req.query.patientid;
+    var type = req.query.type;
+
+
+
+    res.header("Access-Control-Allow-Origin", "*");
+        res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
+        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    
+
+        var patientRecordString;
+
+            if(type == 'verified'){
+                patientRecordString = 'http://localhost:3000/api/queries/VerifiedPatientRecords?id=resource%3Aorg.example.basic.Patient%23' + patientid;
+            }else if(type == 'unverified'){
+                patientRecordString = 'http://localhost:3000/api/queries/UnVerifiedPatientRecords?id=resource%3Aorg.example.basic.Patient%23' + patientid;
+            }else if(type == 'all'){
+                patientRecordString = 'http://localhost:3000/api/queries/ListByPatient?id=resource%3Aorg.example.basic.Patient%23' + patientid;
+
+            }
+
+
+        axios.get(patientRecordString).then(function (response){
+        console.log(response.data);
+        jsonResponse = response.data;
+ }).then(function (response){
+    res.end(JSON.stringify([{ count: jsonResponse.length}]));
+    }).catch(function (error) {
+    console.log(error);
+  });
+
+
+});
+
 
 
 
