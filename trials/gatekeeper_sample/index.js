@@ -369,6 +369,7 @@ app.get('/passwordCreation', async function(req, res) {
 // Store username as well as aesKey/contentKey in sharedpref....android
 app.post('/api/userLogin', function(req, res) {
     console.log('API Call to user authentication');
+    console.log('----' + req.body.password);
     var username = req.body.username;
     var password = req.body.password;
     var type = req.body.type;
@@ -396,7 +397,7 @@ app.post('/api/userLogin', function(req, res) {
 
 
     axios.get(url).then(function (response){
-        console.log(response.data);
+        // console.log(response.data);
         jsonResponse = response.data;
         
 
@@ -411,7 +412,7 @@ app.post('/api/userLogin', function(req, res) {
 
 
   function checkPassword(response){
-      console.log(response);
+    //   console.log(response);
       console.log(response.password);
       console.log('inside check');
 
@@ -900,7 +901,7 @@ app.get('/api/shareDoctor', async function(req, res) {
                 jsonResponse = response.data;
         
             }).then(function (response){
-                res.send(JSON.stringify([{contentKey :jsonResponse['contentKey']}]));
+                res.send(JSON.stringify([{contentKey :jsonResponse['contentKey'], patientName : jsonResponse['firstName'] + ' ' + jsonResponse['lastName']}]));
                 // res.send(jsonResponse['contentKey']);
             }).catch(function (error) {
             console.log(error);
@@ -1092,7 +1093,8 @@ app.get('/api/doctorPrivateKey', async function(req, res) {
             doctorResponse = response.data['privateKey'];
     
         }).then(function (response){
-            res.end(JSON.stringify({data : doctorResponse.substring(0, doctorResponse.length - 1)}));
+            res.end(doctorResponse.substring(0, doctorResponse.length - 1));
+            // res.end(JSON.stringify({data : doctorResponse.substring(0, doctorResponse.length - 1)}));
         }).catch(function (error) {
         console.log(error);
       });
