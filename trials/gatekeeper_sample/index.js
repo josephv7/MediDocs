@@ -822,6 +822,11 @@ app.get('/api/shareDoctor', async function(req, res) {
     var doctorid = req.query.doctorid;
 
     var recordString = 'org.example.basic.MedicalRecord#' + recordid;
+
+    res.header("Access-Control-Allow-Origin", "*");
+        res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
+        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    
     
     
     Request.post({
@@ -836,12 +841,10 @@ app.get('/api/shareDoctor', async function(req, res) {
             return console.dir(error);
         }
         console.dir(JSON.parse(body));
+        res.end(JSON.stringify([{ status: "ok" }]));
         
     });
     
-    res.header("Access-Control-Allow-Origin", "*");
-        res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
-        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     
     });
 
@@ -1019,7 +1022,44 @@ app.get('/api/shareDoctor', async function(req, res) {
             }
                 
                 
-                });
+    });
+
+
+
+
+
+
+
+
+// API to list hospital doctor count
+app.get('/api/hospitaldoctorCount', async function(req, res) {
+    console.log('inside get method');
+    var hospitalid = req.query.hospitalid;
+
+
+
+    res.header("Access-Control-Allow-Origin", "*");
+        res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
+        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    
+
+        var hospitalDoctorString = 'http://localhost:3000/api/queries/HospitalDoctorList?id=resource%3Aorg.example.basic.Hospital%23' + hospitalid;
+        
+
+
+        axios.get(hospitalDoctorString).then(function (response){
+        console.log(response.data);
+        jsonResponse = response.data;
+ }).then(function (response){
+    res.end(JSON.stringify({ count: jsonResponse.length}));
+    }).catch(function (error) {
+    console.log(error);
+  });
+
+
+});
+
+
 
 
 
