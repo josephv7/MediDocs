@@ -39,6 +39,11 @@ app.get('/createHospital', async function(req, res) {
     var count;
     var aesKey;
     var hashedPassword;
+
+
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     
 
     axios.get('http://localhost:3000/api/Hospital').then(function (response){
@@ -87,9 +92,7 @@ app.get('/createHospital', async function(req, res) {
 
   }
   
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    
 });
 
 
@@ -106,6 +109,11 @@ app.get('/createPatient', async function(req, res) {
     console.log(req.query.firstName);
     console.log(req.query.lastName);
     console.log(req.query.password);
+
+
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 
     var jsonResponse;
     var count;
@@ -155,15 +163,14 @@ app.get('/createPatient', async function(req, res) {
                 return console.dir(error);
             }
             console.dir(JSON.parse(body));
+            res.end(JSON.stringify({ status: "ok" }));
         });
 
         });
 
   }
   
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    
 });
 
 
@@ -175,6 +182,11 @@ app.get('/createDoctor', async function(req, res) {
     console.log(req.query.lastName);
     console.log(req.query.password);
     console.log(req.query.hospitalId);
+
+
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 
     var jsonResponse;
     var count;
@@ -249,7 +261,8 @@ app.get('/createDoctor', async function(req, res) {
             if(error) {
                 return console.dir(error);
             }
-            console.dir(JSON.parse(body));
+            // console.dir(JSON.parse(body));
+            res.end(JSON.stringify({ status: "ok" }));
         });
 
         });
@@ -259,9 +272,7 @@ app.get('/createDoctor', async function(req, res) {
 
   }
 
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    
 });
 
 
@@ -593,6 +604,7 @@ node.on('ready', async () => {
 
 
             console.dir(JSON.parse(body));
+            res.end(JSON.stringify([{ status: "ok" }]));
         });
       } catch (error) {
         console.error('Node failed to stop cleanly!', error)
