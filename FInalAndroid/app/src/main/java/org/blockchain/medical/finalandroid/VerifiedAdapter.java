@@ -50,24 +50,24 @@ public class VerifiedAdapter extends RecyclerView.Adapter<VerifiedAdapter.MyView
 
     String[] doctorArray;
 
-    ProgressBar pd;
+
 
 
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView classs, recordId, owner,valuev,doctorId;
         public Button bt1,bt2;
+        ProgressBar pd;
 
         public MyViewHolder(View view) {
             super(view);
-            classs = (TextView) view.findViewById(R.id.classs);
             recordId = (TextView) view.findViewById(R.id.recordId);
-            owner = (TextView) view.findViewById(R.id.owner);
             valuev = (TextView) view.findViewById(R.id.valuev);
             doctorId = (TextView) view.findViewById(R.id.doctorId);
             bt1 = view.findViewById(R.id.bt1);
             bt2 = view.findViewById(R.id.bt2);
-            pd = view.findViewById(R.id.pd);
+            pd = view.findViewById(R.id.pd1);
+
 
 
         }
@@ -102,15 +102,15 @@ public class VerifiedAdapter extends RecyclerView.Adapter<VerifiedAdapter.MyView
 
 
 
-        holder.classs.setText(" : "+verified.getClasss());
+
         holder.recordId.setText(" : "+verified.getRecordId());
-        holder.owner.setText(" : "+verified.getOwner());
 
 
         holder.valuev.setText(" : " + valsplit);
 
 
        holder.doctorId.setText(" : "+docsplit);
+
 
 
         if (verified.getVerified().equals("true"))
@@ -139,6 +139,7 @@ public class VerifiedAdapter extends RecyclerView.Adapter<VerifiedAdapter.MyView
                     // setup the alert builder
 
                 }
+
 
                 private void getDoctors() {
 
@@ -241,7 +242,7 @@ public class VerifiedAdapter extends RecyclerView.Adapter<VerifiedAdapter.MyView
                         public void onClick(DialogInterface dialog, int which) {
                             switch (which){
                                 case DialogInterface.BUTTON_POSITIVE:
-                                    pd.setVisibility(View.VISIBLE);
+                                    holder.pd.setVisibility(View.VISIBLE);
                                     getVerified();
                                     break;
 
@@ -273,7 +274,7 @@ public class VerifiedAdapter extends RecyclerView.Adapter<VerifiedAdapter.MyView
                                 @Override
                                 public void onResponse(Call<List<VerificationResponse>> call, Response<List<VerificationResponse>> response) {
 
-                                    pd.setVisibility(View.INVISIBLE);
+                                    holder.pd.setVisibility(View.INVISIBLE);
 
                                     List<VerificationResponse> docs = response.body();
 
@@ -396,7 +397,6 @@ public class VerifiedAdapter extends RecyclerView.Adapter<VerifiedAdapter.MyView
             @Override
             public void onResponse(Call<List<ShareDoctorResponse>> call, Response<List<ShareDoctorResponse>> response) {
 
-                pd.setVisibility(View.INVISIBLE);
 
                 List<ShareDoctorResponse> docs = response.body();
 

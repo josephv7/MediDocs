@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.common.hash.Hashing;
@@ -33,6 +34,7 @@ public class Login extends AppCompatActivity {
     ProgressBar pd;
     String generatedHash;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +45,7 @@ public class Login extends AppCompatActivity {
         login = findViewById(R.id.login);
         pd = findViewById(R.id.progressBar);
 
+
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -50,7 +53,7 @@ public class Login extends AppCompatActivity {
                     Toast.makeText(Login.this, "Enter Required Fields", Toast.LENGTH_SHORT).show();
                 }else{
 
-                    login.setVisibility(View.INVISIBLE);
+                    //login.setVisibility(View.INVISIBLE);
                     pd.setVisibility(View.VISIBLE);
                     postLogin();
 
@@ -99,13 +102,13 @@ public class Login extends AppCompatActivity {
                     Toast.makeText(Login.this, "Incorrect Password", Toast.LENGTH_SHORT).show();
 
                     pd.setVisibility(View.INVISIBLE);
-                    login.setVisibility(View.VISIBLE);
+                   // login.setVisibility(View.VISIBLE);
 
                 }else if(loginStatus.equalsIgnoreCase("error")){
                     Toast.makeText(Login.this, "Server Error", Toast.LENGTH_SHORT).show();
 
                     pd.setVisibility(View.INVISIBLE);
-                    login.setVisibility(View.VISIBLE);
+                    //login.setVisibility(View.VISIBLE);
 
                 }
 
@@ -152,6 +155,7 @@ public class Login extends AppCompatActivity {
                 editor.putString("contentkey",contentKey);
                 editor.putBoolean("loggedin", true);
                 editor.putString("name",name.getText().toString());
+                editor.putString("patientName",docs.get(0).patientName);
                 editor.commit();
 
 

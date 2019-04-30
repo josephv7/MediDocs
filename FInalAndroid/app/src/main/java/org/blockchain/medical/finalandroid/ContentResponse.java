@@ -7,4 +7,9 @@ public class ContentResponse {
     @SerializedName("contentKey")
     String contentKey;
 
+    @SerializedName("patientName")
+    String patientName;
+
+
+
 }

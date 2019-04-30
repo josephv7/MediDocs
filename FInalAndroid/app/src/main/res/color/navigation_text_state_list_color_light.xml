@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) 2018. Netsaps Technologies Pvt Ltd - All Rights Reserved
+  ~ Unauthorized copying of this file, via any medium is strictly prohibited
+  ~ Proprietary and confidential
+  ~ Last updated by Habel Philip <habel@netsaps.com>, 1/5/18 4:45 PM
+  ~
+  -->
+
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Item checked -->
+    <item android:color="@color/colorPrimary" android:state_checked="true" />
+    <!-- Item pressed -->
+    <item android:color="@color/grey_60" android:state_pressed="true" />
+    <!-- Item default -->
+    <item android:color="@color/grey_60" />
+</selector>

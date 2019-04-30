@@ -24,21 +24,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/row_padding_vertical">
-    <TableRow>
-        <TextView
-            android:id="@+id/classs1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="$CLASS"
-            android:textColor="#000"/>
 
-        <TextView
-        android:id="@+id/classs"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="TextView" />
-
-    </TableRow>
 
     <TableRow>
 
@@ -57,22 +43,6 @@
 
     </TableRow>
 
-    <TableRow>
-
-        <TextView
-            android:id="@+id/owner1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="OWNER"
-            android:textColor="#000"/>
-
-        <TextView
-        android:id="@+id/owner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="TextView" />
-
-    </TableRow>
 
     <TableRow>
 
@@ -116,7 +86,7 @@
             android:text="bt" />
 
         <ProgressBar
-            android:id="@+id/pd"
+            android:id="@+id/pd1"
             style="?android:attr/progressBarStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
