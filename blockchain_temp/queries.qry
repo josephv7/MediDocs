@@ -1,0 +1,32 @@
+query ListByPatient {
+  description: "List all record of a patient"
+  statement:
+      SELECT org.example.basic.MedicalRecord WHERE (owner == _$id)
+}
+
+query ListRecordDoctor{
+  description: "List all records accessible by a doctor"
+  statement:
+      SELECT org.example.basic.MedicalRecord WHERE (doctorId CONTAINS _$id)
+}
+
+
+query HospitalDoctorList{
+  description: "List all doctors in a hospital"
+  statement:
+      SELECT org.example.basic.Doctor WHERE (hospital == _$id)
+}
+
+
+query VerifiedPatientRecords {
+  description: "List all record of a patient which are verified"
+  statement:
+      SELECT org.example.basic.MedicalRecord WHERE (owner == _$id AND verified == 'true')
+}
+
+
+query UnVerifiedPatientRecords {
+  description: "List all record of a patient which are unverified"
+  statement:
+      SELECT org.example.basic.MedicalRecord WHERE (owner == _$id AND verified == 'false')
+}
