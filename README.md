@@ -1,4 +1,4 @@
-# EndGame
+# MediDocs
 
 ## Web App Flow
 ### Regulator Login
