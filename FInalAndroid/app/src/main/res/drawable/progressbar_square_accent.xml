@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) 2018. Netsaps Technologies Pvt Ltd - All Rights Reserved
+  ~ Unauthorized copying of this file, via any medium is strictly prohibited
+  ~ Proprietary and confidential
+  ~ Last updated by Habel Philip <habel@netsaps.com>, 1/5/18 4:45 PM
+  ~
+  -->
+
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@android:id/background">
+        <shape android:shape="rectangle">
+            <size android:height="2dp" />
+            <solid android:color="@color/colorAccentLight" />
+        </shape>
+    </item>
+
+    <item>
+        <clip>
+            <shape android:shape="rectangle">
+                <solid android:color="@color/colorAccent" />
+                <size android:height="2dp" />
+            </shape>
+
+        </clip>
+
+    </item>
+
+</layer-list>
