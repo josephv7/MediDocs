@@ -47,7 +47,7 @@ app.get('/createHospital', async function(req, res) {
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     
 
-    axios.get('https://61a7cf37.ngrok.io/api/Hospital').then(function (response){
+    axios.get('http://localhost:3000/api/Hospital').then(function (response){
         console.log(response.data);
         jsonResponse = response.data;
 
@@ -75,7 +75,7 @@ app.get('/createHospital', async function(req, res) {
 
         Request.post({
             "headers": { "content-type": "application/json" },
-            "url": "https://61a7cf37.ngrok.io/api/Hospital",
+            "url": "http://localhost:3000/api/Hospital",
             "body": JSON.stringify({
                 "hospitalName" : req.query.hospitalName,
                 "hospitalId" : count.toString(),
@@ -87,6 +87,7 @@ app.get('/createHospital', async function(req, res) {
                 return console.dir(error);
             }
             console.dir(JSON.parse(body));
+            res.end(JSON.stringify({ status: "ok" }));
         });
 
         // });
@@ -122,7 +123,7 @@ app.get('/createPatient', async function(req, res) {
     var hashedPassword;
     
 
-    axios.get('https://61a7cf37.ngrok.io/api/Patient').then(function (response){
+    axios.get('http://localhost:3000/api/Patient').then(function (response){
         console.log(response.data);
         jsonResponse = response.data;
 
@@ -150,7 +151,7 @@ app.get('/createPatient', async function(req, res) {
 
         Request.post({
             "headers": { "content-type": "application/json" },
-            "url": "https://61a7cf37.ngrok.io/api/Patient",
+            "url": "http://localhost:3000/api/Patient",
             "body": JSON.stringify({
                 "firstName" : req.query.firstName,
                 "lastName" : req.query.lastName,
@@ -195,7 +196,7 @@ app.get('/createDoctor', async function(req, res) {
     var fullId = 'org.example.basic.Hospital#' + req.query.hospitalId;
     
 
-    axios.get('https://61a7cf37.ngrok.io/api/Doctor').then(function (response){
+    axios.get('http://localhost:3000/api/Doctor').then(function (response){
         console.log(response.data);
         jsonResponse = response.data;
 
@@ -209,7 +210,7 @@ app.get('/createDoctor', async function(req, res) {
   function findDoctorCount(){
 
 
-    count =  3000 + jsonResponse.length;
+    count =  3001 + jsonResponse.length;
 
 
     // openssl genrsa -out rsa_1024_priv.pem 1024
@@ -247,7 +248,7 @@ app.get('/createDoctor', async function(req, res) {
 
             Request.post({
             "headers": { "content-type": "application/json" },
-            "url": "https://61a7cf37.ngrok.io/api/Doctor",
+            "url": "http://localhost:3000/api/Doctor",
             "body": JSON.stringify({
                 "firstName" : req.query.firstName,
                 "lastName" : req.query.lastName,
@@ -313,7 +314,7 @@ app.get('/passwordCreation', async function(req, res) {
         
 
 
-        axios.get('https://61a7cf37.ngrok.io/api/Doctor').then(function (response){
+        axios.get('http://localhost:3000/api/Doctor').then(function (response){
             console.log(response.data);
             jsonResponse = response.data;
     
@@ -351,7 +352,7 @@ app.get('/passwordCreation', async function(req, res) {
             
     
     
-            axios.get('https://61a7cf37.ngrok.io/api/Hospital').then(function (response){
+            axios.get('http://localhost:3000/api/Hospital').then(function (response){
                 console.log(response.data);
                 jsonResponse = response.data;
         
@@ -395,16 +396,16 @@ app.post('/api/userLogin', function(req, res) {
 
     var url;
     if(type == 'patient'){
-        url = 'https://61a7cf37.ngrok.io/api/Patient/' + username.toString();
+        url = 'http://localhost:3000/api/Patient/' + username.toString();
     }else if(type == 'doctor'){
-        url = 'https://61a7cf37.ngrok.io/api/Doctor/' + username.toString();
+        url = 'http://localhost:3000/api/Doctor/' + username.toString();
     }else if(type == 'hospital'){
-        url = 'https://61a7cf37.ngrok.io/api/Hospital/' + username.toString();
+        url = 'http://localhost:3000/api/Hospital/' + username.toString();
     }else if (type == 'insurance'){
-        url = 'https://61a7cf37.ngrok.io/api/InsuranceCompany/' + username.toString();
+        url = 'http://localhost:3000/api/InsuranceCompany/' + username.toString();
 
     }else if (type == 'regulator'){
-        url = 'https://61a7cf37.ngrok.io/api/Regulator/' + username.toString();
+        url = 'http://localhost:3000/api/Regulator/' + username.toString();
 
     }
 
@@ -460,7 +461,7 @@ app.get('/test', async function(req, res) {
     
     Request.post({
         "headers": { "content-type": "application/json" },
-        "url": "https://65c94784.ngrok.io/api/ShareDoctor",
+        "url": "http://65c94784.ngrok.io/api/ShareDoctor",
         "body": JSON.stringify({
             "asset": "org.example.basic.MedicalRecord#2001",
             "newDoctorId": "3005"
@@ -508,7 +509,7 @@ app.post('/api/createRecord', function(req, res) {
 
 
 
-    axios.get('https://61a7cf37.ngrok.io/api/MedicalRecord').then(function (response){
+    axios.get('http://localhost:3000/api/MedicalRecord').then(function (response){
         console.log(response.data);
         jsonResponse = response.data;
 
@@ -526,7 +527,7 @@ app.post('/api/createRecord', function(req, res) {
 
 
     calculatedId =  1001 + jsonResponse.length;
-    var patientUrl = 'https://61a7cf37.ngrok.io/api/Patient/' + req.body.username;
+    var patientUrl = 'http://localhost:3000/api/Patient/' + req.body.username;
 
     ownerName = 'org.example.basic.Patient#' + username;
 
@@ -582,7 +583,7 @@ node.on('ready', async () => {
         console.log('Node stopped!')
         Request.post({
             "headers": { "content-type": "application/json" },
-            "url": "https://61a7cf37.ngrok.io/api/MedicalRecord",
+            "url": "http://localhost:3000/api/MedicalRecord",
             "body": JSON.stringify({
                 "recordId": calculatedId,
                 "owner" : ownerName,
@@ -637,7 +638,7 @@ app.get('/recordVerification', async function(req, res) {
     var username = req.query.username;
     var recordid = req.query.recordid;
 
-    var recordUrl = 'https://61a7cf37.ngrok.io/api/MedicalRecord/' + recordid;
+    var recordUrl = 'http://localhost:3000/api/MedicalRecord/' + recordid;
     var ownerString = 'resource:org.example.basic.Patient#' + username;
     var recordString = 'org.example.basic.MedicalRecord#' + recordid;
 
@@ -663,7 +664,7 @@ app.get('/recordVerification', async function(req, res) {
   function doVerification(){
     Request.post({
         "headers": { "content-type": "application/json" },
-        "url": "https://61a7cf37.ngrok.io/api/RecordVerification",
+        "url": "http://localhost:3000/api/RecordVerification",
         "body": JSON.stringify({
             "asset": recordString,
             "newVerified" : 'true'
@@ -695,7 +696,7 @@ app.get('/recordVerification', async function(req, res) {
         console.log('API Call to list all doctors in a hospital');        console.log(req.query.hospitalid);
         var hospitalid = req.query.hospitalid;
 
-        var hospitalDoctorString = 'https://61a7cf37.ngrok.io/api/queries/HospitalDoctorList?id=resource%3Aorg.example.basic.Hospital%23' + hospitalid;
+        var hospitalDoctorString = 'http://localhost:3000/api/queries/HospitalDoctorList?id=resource%3Aorg.example.basic.Hospital%23' + hospitalid;
         
     
         
@@ -749,11 +750,11 @@ app.get('/recordVerification', async function(req, res) {
             var patientRecordString;
 
             if(listType == 'verified'){
-                patientRecordString = 'https://61a7cf37.ngrok.io/api/queries/VerifiedPatientRecords?id=resource%3Aorg.example.basic.Patient%23' + patientId;
+                patientRecordString = 'http://localhost:3000/api/queries/VerifiedPatientRecords?id=resource%3Aorg.example.basic.Patient%23' + patientId;
             }else if(listType == 'unverified'){
-                patientRecordString = 'https://61a7cf37.ngrok.io/api/queries/UnVerifiedPatientRecords?id=resource%3Aorg.example.basic.Patient%23' + patientId;
+                patientRecordString = 'http://localhost:3000/api/queries/UnVerifiedPatientRecords?id=resource%3Aorg.example.basic.Patient%23' + patientId;
             }else if(listType == 'all'){
-                patientRecordString = 'https://61a7cf37.ngrok.io/api/queries/ListByPatient?id=resource%3Aorg.example.basic.Patient%23' + patientId;
+                patientRecordString = 'http://localhost:3000/api/queries/ListByPatient?id=resource%3Aorg.example.basic.Patient%23' + patientId;
 
             }
     
@@ -792,7 +793,7 @@ app.get('/recordVerification', async function(req, res) {
                 var doctorId = req.query.doctorId;
                 
                
-                var doctorRecordString = 'https://61a7cf37.ngrok.io/api/queries/ListRecordDoctor?id=' + doctorId;
+                var doctorRecordString = 'http://localhost:3000/api/queries/ListRecordDoctor?id=' + doctorId;
     
                 
                 
@@ -847,7 +848,7 @@ app.get('/api/shareDoctor', async function(req, res) {
     
     Request.post({
         "headers": { "content-type": "application/json" },
-        "url": "https://61a7cf37.ngrok.io/api/UpdateDoctor",
+        "url": "http://localhost:3000/api/UpdateDoctor",
         "body": JSON.stringify({
             "asset": recordString,
             "newDoctorId": doctorid.split('.')
@@ -907,7 +908,7 @@ app.get('/api/shareDoctor', async function(req, res) {
             var patientid = req.query.patientid;
         
             // var recordUrl = 'org.example.basic.MedicalRecord#' + recordid;
-            var patientUrl = 'https://61a7cf37.ngrok.io/api/Patient/' + patientid;
+            var patientUrl = 'http://localhost:3000/api/Patient/' + patientid;
         
             
             axios.get(patientUrl).then(function (response){
@@ -956,9 +957,9 @@ app.get('/api/shareDoctor', async function(req, res) {
                 var doctorid = req.query.doctorid;
             
                 // var recordUrl = 'org.example.basic.MedicalRecord#' + recordid;
-                var patientUrl = 'https://61a7cf37.ngrok.io/api/Patient/' + patientid;
-                var recordUrl = 'https://61a7cf37.ngrok.io/api/MedicalRecord/' + recordid;
-                var doctorUrl = 'https://61a7cf37.ngrok.io/api/Doctor/' + doctorid;
+                var patientUrl = 'http://localhost:3000/api/Patient/' + patientid;
+                var recordUrl = 'http://localhost:3000/api/MedicalRecord/' + recordid;
+                var doctorUrl = 'http://localhost:3000/api/Doctor/' + doctorid;
 
 
                 var dataResponse;
@@ -1037,7 +1038,7 @@ app.get('/api/shareDoctor', async function(req, res) {
 
                 // console.log(key.encrypt('abc').toString());
 
-                res.end(JSON.stringify({ encryptedKey: encrypted.toString("base64"), fileHash: dataResponse}));
+                res.end(JSON.stringify({ encryptedKey: encrypted.toString("base64"), fileHash: dataResponse, aesKey: keyResponse}));
 
 
             }
@@ -1064,7 +1065,7 @@ app.get('/api/hospitaldoctorCount', async function(req, res) {
         res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     
 
-        var hospitalDoctorString = 'https://61a7cf37.ngrok.io/api/queries/HospitalDoctorList?id=resource%3Aorg.example.basic.Hospital%23' + hospitalid;
+        var hospitalDoctorString = 'http://localhost:3000/api/queries/HospitalDoctorList?id=resource%3Aorg.example.basic.Hospital%23' + hospitalid;
         
 
 
@@ -1090,7 +1091,7 @@ app.get('/api/doctorPrivateKey', async function(req, res) {
 
     var doctorResponse;
 
-    var doctorUrl = 'https://61a7cf37.ngrok.io/api/Doctor/' + doctorid;
+    var doctorUrl = 'http://localhost:3000/api/Doctor/' + doctorid;
 
     res.header("Access-Control-Allow-Origin", "*");
         res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
@@ -1133,11 +1134,11 @@ app.get('/api/patientRecordCount', async function(req, res) {
         var patientRecordString;
 
             if(type == 'verified'){
-                patientRecordString = 'https://61a7cf37.ngrok.io/api/queries/VerifiedPatientRecords?id=resource%3Aorg.example.basic.Patient%23' + patientid;
+                patientRecordString = 'http://localhost:3000/api/queries/VerifiedPatientRecords?id=resource%3Aorg.example.basic.Patient%23' + patientid;
             }else if(type == 'unverified'){
-                patientRecordString = 'https://61a7cf37.ngrok.io/api/queries/UnVerifiedPatientRecords?id=resource%3Aorg.example.basic.Patient%23' + patientid;
+                patientRecordString = 'http://localhost:3000/api/queries/UnVerifiedPatientRecords?id=resource%3Aorg.example.basic.Patient%23' + patientid;
             }else if(type == 'all'){
-                patientRecordString = 'https://61a7cf37.ngrok.io/api/queries/ListByPatient?id=resource%3Aorg.example.basic.Patient%23' + patientid;
+                patientRecordString = 'http://localhost:3000/api/queries/ListByPatient?id=resource%3Aorg.example.basic.Patient%23' + patientid;
 
             }
 
@@ -1153,6 +1154,82 @@ app.get('/api/patientRecordCount', async function(req, res) {
 
 
 });
+
+
+
+
+
+
+
+// API to create new regulator
+app.get('/createRegulator', async function(req, res) {
+    console.log('API Call to create new regulator');
+    console.log(req.query.regulatorName);
+    console.log(req.query.password);
+
+    var jsonResponse;
+    var count;
+    var aesKey;
+    var hashedPassword;
+
+
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    
+
+    axios.get('http://localhost:3000/api/Regulator').then(function (response){
+        console.log(response.data);
+        jsonResponse = response.data;
+
+        // console.log(SHA256(req.query.password).toString());
+        // hashedPassword = SHA256(req.query.password).toString();
+
+    }).then(function (response){
+        findRegulatorCount();
+    }).catch(function (error) {
+    console.log(error);
+  });
+
+
+  function findRegulatorCount(){
+
+
+    count =  5001 + jsonResponse.length;
+
+    
+
+    // openssl('openssl enc -aes-128-cbc -k secret -P -md sha1', function (err, buffer) {
+    //     console.log(err.toString(), buffer.toString());
+    //     aesKey = buffer.toString().substr(26,32);
+    //     console.log(aesKey);
+
+        Request.post({
+            "headers": { "content-type": "application/json" },
+            "url": "http://localhost:3000/api/Regulator",
+            "body": JSON.stringify({
+                "regulatorName" : req.query.regulatorName,
+                "regulatorId" : count.toString(),
+                "password" : SHA256(req.query.password).toString()
+                
+            })
+        }, (error, response, body) => {
+            if(error) {
+                return console.dir(error);
+            }
+            console.dir(JSON.parse(body));
+            res.end(JSON.stringify({ status: "ok" }));
+        });
+
+        // });
+
+  }
+  
+    
+});
+
+
+
 
 
 
