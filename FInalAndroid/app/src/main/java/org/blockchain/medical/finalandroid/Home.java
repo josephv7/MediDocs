@@ -12,6 +12,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +33,7 @@ public class Home extends AppCompatActivity {
     String count;
     TextView count1,count2;
     SwipeRefreshLayout pullToRefresh;
+    ProgressBar pro;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -75,6 +77,7 @@ public class Home extends AppCompatActivity {
         count1 = findViewById(R.id.count1);
         count2 = findViewById(R.id.count2);
         pullToRefresh = findViewById(R.id.pullToRefresh);
+        pro = findViewById(R.id.pro);
 
         userName.setText(pref.getString("patientName","Patient One"));
         userId.setText(pref.getString("name","2001"));
@@ -185,6 +188,10 @@ public class Home extends AppCompatActivity {
 
                 count = docs.get(0).count;
                 count2.setText(count);
+
+                pro.setVisibility(View.INVISIBLE);
+
+
 
 
             }

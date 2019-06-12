@@ -99,10 +99,6 @@ public class VerifiedAdapter extends RecyclerView.Adapter<VerifiedAdapter.MyView
         docsplit = verified.getDoctorId().substring(1,verified.getDoctorId().length()-1);
 
 
-
-
-
-
         holder.recordId.setText(" : "+verified.getRecordId());
 
 
@@ -122,6 +118,8 @@ public class VerifiedAdapter extends RecyclerView.Adapter<VerifiedAdapter.MyView
             @Override
             public void onClick(View v) {
 
+                Log.d("bbb",holder.valuev.getText().subSequence(3,holder.valuev.getText().length()).toString());
+                str1 =  holder.valuev.getText().subSequence(3,holder.valuev.getText().length()).toString();
                 Intent viewIntent = new Intent(context,RecordView.class);
                 viewIntent.putExtra("value",str1);
                 context.startActivity(viewIntent);
@@ -130,13 +128,16 @@ public class VerifiedAdapter extends RecyclerView.Adapter<VerifiedAdapter.MyView
 
         if (verified.getVerified().equals("true"))
             holder.bt1.setOnClickListener(new View.OnClickListener() {
+
                 @Override
                 public void onClick(View v) {
                     Log.d("hi1","hi1");
+                    holder.pd.setVisibility(View.VISIBLE);
 
 
                     getDoctors();
                     // setup the alert builder
+
 
                 }
 
@@ -213,6 +214,7 @@ public class VerifiedAdapter extends RecyclerView.Adapter<VerifiedAdapter.MyView
 
 
 
+                            holder.pd.setVisibility(View.INVISIBLE);
 
 
                         dialog();

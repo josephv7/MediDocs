@@ -69,9 +69,13 @@ public class RecordView extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         hash = bundle.getString("value");
 
+
+
         SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
         contentkey = pref.getString("contentkey","2001");
         Log.d("contentxxx",contentkey);
+
+        Log.d("hashiii",hash);
 
         Call<List<ViewResponse>> call = api.viewRecord(hash);
 

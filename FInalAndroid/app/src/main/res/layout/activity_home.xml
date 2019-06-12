@@ -12,11 +12,15 @@
     android:layout_height="wrap_content"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
+
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/grey_5">
+
+
+
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -35,11 +39,15 @@
         android:scrollingCache="true"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
+
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:orientation="vertical">
+
+
 
             <ImageView
                 android:layout_width="match_parent"
@@ -91,6 +99,10 @@
                         android:textSize="20dp"
                         android:textStyle="bold" />
 
+
+
+
+
                 </RelativeLayout>
 
 
@@ -119,6 +131,8 @@
                     android:paddingTop="@dimen/spacing_large"
                     android:paddingBottom="@dimen/spacing_large">
 
+
+
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
@@ -127,6 +141,8 @@
                         android:clickable="true"
                         android:gravity="center"
                         android:orientation="vertical">
+
+
 
                         <TextView
                             android:id="@+id/count1"
@@ -248,10 +264,18 @@
                         android:text="Logout"
                         android:textAppearance="@style/Base.TextAppearance.AppCompat.Body2" />
 
+
                 </LinearLayout>
 
 
+
             </LinearLayout>
+
+            <ProgressBar
+                android:id="@+id/pro"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                />
 
         </LinearLayout>
 
