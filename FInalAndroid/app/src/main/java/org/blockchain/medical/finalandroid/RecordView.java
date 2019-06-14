@@ -32,6 +32,7 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
+import pl.droidsonroids.gif.GifImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -46,6 +47,7 @@ public class RecordView extends AppCompatActivity {
     TextView record;
     byte[] decryptedString;
     String contentkey;
+    GifImageView gif;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +55,7 @@ public class RecordView extends AppCompatActivity {
         setContentView(R.layout.activity_record_view);
 
         record= findViewById(R.id.record);
+        gif = findViewById(R.id.gif);
 
         viewRecord();
     }
@@ -127,7 +130,10 @@ public class RecordView extends AppCompatActivity {
                 }
                 String decryptedText = new String(decryptedData, StandardCharsets.UTF_8);
 
+
+                gif.setVisibility(View.INVISIBLE);
                 record.setText(decryptedText);
+                record.setVisibility(View.VISIBLE);
 
 
 
