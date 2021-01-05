@@ -11,7 +11,7 @@
   "dependencies": {
     "@google-cloud/storage": "^2.4.2",
     "@google-cloud/vision": "^0.24.0",
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "body-parser": "^1.18.3",
     "express": "^4.16.4",
     "ipfs": "^0.34.4",
